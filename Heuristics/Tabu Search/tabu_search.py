@@ -19,11 +19,36 @@ Candidates for neighboring steps can be generated
 neighborhood, or the neighborhood can be sampled stochastically at a
 fixed size, exchanging efficiency for accuracy.
 '''
-from algorithms.utilities import constructInitialSolution, tourCost, stochasticTwoOptWithEdges
 import time
+
+def stochasticTwoOptWithEdges(perm):
+    result = numpy.copy(perm)
+    size = result.shape[0]
+    p1, p2 = random.randrange(0,size), random.randrange(0,size)
+    exclude = set([p1])
+    if p1 == 0:
+        exclude.add(size-1)
+    else:
+        exclude.add(p1-1)
+
+    if p1 == size-1:
+        exclude.add(0)
+    else:
+        exclude.add(p1+1)
+
+    while p2 in exclude:
+        p2 = random.randrange(0,size)
+
+    if p2<p1:
+        p1, p2 = p2, p1
+
+    result[p1:p2] = reversed(result[p1:p2])
+
+    return result, [[perm[p1-1],perm[p1]],[perm[p2-1],perm[p2]]]
 
 # Function that returns the best candidate, ordered by cost
 def locateBestCandidate(candidates):
+    # TODO: Modify to not sort
     candidates.sort(key=lambda c: c["candidate"]["cost"])
     best, edges = candidates[0]["candidate"], candidates[0]["edges"]
     return best, edges
@@ -48,24 +73,24 @@ def isTabu(perm, tabuList, timeLimit):
     return result
 
 
-def generateCandidates(best, tabuList, points, timeLimit):
+def generateCandidates(best, tabuList, tsp, timeLimit):
     permutation, edges, result = None, None, {}
     while permutation == None or isTabu(best["permutation"], tabuList, timeLimit):
         permutation, edges = stochasticTwoOptWithEdges(best["permutation"])
     candidate = {}
     candidate["permutation"] = permutation
-    candidate["cost"] = tourCost(candidate["permutation"])
+    candidate["cost"] = calculateCost(candidate["permutation"], tsp)
     result["candidate"] = candidate
     result["edges"] = edges
     return result
 
 
-def search(points, maxIterations, maxTabu, maxCandidates, timeLimit):
+def search(tsp, maxIterations, maxTabu, maxCandidates, timeLimit):
     t_end = time.time() + timeLimit
     # construct a random tour
     best = {}
-    best["permutation"] = constructInitialSolution(points)
-    best["cost"] = tourCost(best["permutation"])
+    best["permutation"] = generateInitialSolution(tsp)
+    best["cost"] = calculateCost(best["permutation"], tsp)
     tabuList = []
     while maxIterations > 0 and time.time() < t_end:
         # Generates queries using the local search 2-opt algorithm
@@ -73,7 +98,7 @@ def search(points, maxIterations, maxTabu, maxCandidates, timeLimit):
         # Uses the tabu list not to visit vertices more than once
         candidates = []
         for index in range(0, maxCandidates):
-            candidates.append(generateCandidates(best, tabuList, points, t_end))
+            candidates.append(generateCandidates(best, tabuList, tsp, t_end))
         # Find the best candidate
         # sorts the list of candidates by cost
         bestCandidate, bestCandidateEdges = locateBestCandidate(candidates)
@@ -89,13 +114,13 @@ def search(points, maxIterations, maxTabu, maxCandidates, timeLimit):
 
         return best
 
-def searchIteration(points, maxIterations, maxTabu, maxCandidates, timeLimit):
+def searchIteration(tsp, maxIterations, maxTabu, maxCandidates, timeLimit):
     t_end = time.time() + timeLimit
     best_list = []
     # builds the initial solution
     best = {}
-    best["permutation"] = constructInitialSolution(points)
-    best["cost"] = tourCost(best["permutation"])
+    best["permutation"] = generateInitialSolution(tsp)
+    best["cost"] = calculateCost(best["permutation"], tsp)
     tabuList = []
     while maxIterations > 0 and time.time() < t_end:
         # Generates queries using the local search 2-opt algorithm
@@ -103,7 +128,7 @@ def searchIteration(points, maxIterations, maxTabu, maxCandidates, timeLimit):
         # Uses the tabu list not to visit vertices more than once
         candidates = []
         for index in range(0, maxCandidates):
-            candidates.append(generateCandidates(best, tabuList, points, t_end))
+            candidates.append(generateCandidates(best, tabuList, tsp, t_end))
         # Find the best candidate
         # sorts the list of employees by cost
         bestCandidate, bestCandidateEdges = locateBestCandidate(candidates)
