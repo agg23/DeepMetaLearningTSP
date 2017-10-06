@@ -1,12 +1,12 @@
 class TSP(object):
-	def isAsymmetric():
+	def isAsymmetric(self):
 		raise NotImplementedError()
 
-	def getCost(cityA, cityB):
+	def getCost(self, cityA, cityB):
 		raise NotImplementedError()
 
-	def setCost(cityA, cityB, cost):
+	def setCost(self, cityA, cityB, cost):
 		raise NotImplementedError()
 
-	def getSize():
+	def getSize(self):
 		raise NotImplementedError()

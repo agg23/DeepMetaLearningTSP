@@ -19,6 +19,8 @@ Candidates for neighboring steps can be generated
 neighborhood, or the neighborhood can be sampled stochastically at a
 fixed size, exchanging efficiency for accuracy.
 '''
+import solver *
+from solver.utilities import generateInitialSolution, calculateCost
 import time
 
 def stochasticTwoOptWithEdges(perm):

@@ -1,16 +1,19 @@
+from Solver.tsp import TSP
+import numpy
+
 class AsymmetricTSP(TSP):
 	def __init__(self, size):
 		# Create a matrix of provided size
 		self.costs = numpy.empty(shape=(size, size))
 
-	def isAsymmetric():
+	def isAsymmetric(self):
 		return True
 
-	def getCost(cityA, cityB):
+	def getCost(self, cityA, cityB):
 		return self.costs[cityA][cityB]
 
-	def setCost(cityA, cityB, cost):
+	def setCost(self, cityA, cityB, cost):
 		self.costs[cityA][cityB] = cost
 
-	def getSize():
+	def getSize(self):
 		return self.costs.shape[0]
