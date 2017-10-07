@@ -1,4 +1,4 @@
-from Solver.tsp import TSP
+from solver.tsp import TSP
 import numpy
 
 class SymmetricTSP(TSP):

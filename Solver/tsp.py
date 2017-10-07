@@ -1,4 +1,6 @@
 class TSP(object):
+	name = None
+
 	def isAsymmetric(self):
 		raise NotImplementedError()
 
