@@ -115,7 +115,7 @@ def search(tsp, maxIterations, maxTabu, maxCandidates, timeLimit):
                     tabuList.append(edge)
         maxIterations -= 1
 
-        return best
+    return best
 
 def searchIteration(tsp, maxIterations, maxTabu, maxCandidates, timeLimit):
     t_end = time.time() + timeLimit
