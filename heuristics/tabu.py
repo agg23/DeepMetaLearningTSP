@@ -21,6 +21,8 @@ fixed size, exchanging efficiency for accuracy.
 '''
 from solver.utilities import generateInitialSolution, calculateCost
 import time
+import numpy
+import random
 
 def stochasticTwoOptWithEdges(perm):
     result = numpy.copy(perm)
@@ -43,7 +45,7 @@ def stochasticTwoOptWithEdges(perm):
     if p2<p1:
         p1, p2 = p2, p1
 
-    result[p1:p2] = reversed(result[p1:p2])
+    result[p1:p2] = numpy.flipud(result[p1:p2])
 
     return result, [[perm[p1-1],perm[p1]],[perm[p2-1],perm[p2]]]
 
@@ -75,8 +77,8 @@ def isTabu(perm, tabuList, timeLimit):
 
 
 def generateCandidates(best, tabuList, tsp, timeLimit):
-    permutation, edges, result = None, None, {}
-    while permutation == None or isTabu(best["permutation"], tabuList, timeLimit):
+    permutation, edges, result = [], None, {}
+    while len(permutation) < 1 or isTabu(best["permutation"], tabuList, timeLimit):
         permutation, edges = stochasticTwoOptWithEdges(best["permutation"])
     candidate = {}
     candidate["permutation"] = permutation

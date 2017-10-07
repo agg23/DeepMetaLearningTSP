@@ -1,7 +1,10 @@
+import numpy
+import random
+
 def generateInitialSolution(tsp):
 	size = tsp.getSize()
 
-	solution = np.arange(size)
+	solution = numpy.arange(size)
 
 	for index in range(size):
 		randomIndex = random.randrange(index, size)
@@ -17,7 +20,7 @@ def calculateCost(solution, tsp):
 	if solution.shape[0] < 2:
 		return cost
 
-	previous = null
+	previous = None
 	current = solution[0]
 
 	for i in range(1, solution.shape[0]):
