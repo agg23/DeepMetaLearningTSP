@@ -31,4 +31,7 @@ def calculateCost(solution, tsp):
 		previous = current
 		current = temp
 
+	# Add cost of returning from last to first
+	cost += tsp.getCost(current, solution[0])
+
 	return cost
