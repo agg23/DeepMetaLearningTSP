@@ -27,7 +27,7 @@ def calculateCost(solution, tsp):
 		temp = solution[i]
 
 		cost += tsp.getCost(current, temp)
-
+ 
 		previous = current
 		current = temp
 
