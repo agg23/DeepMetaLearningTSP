@@ -63,6 +63,9 @@ def loadTSPLib(path):
 						tsp.setCost(i, j, cost)
 						tsp.setCost(j, i, cost)
 
+				# Add diagonal
+				tsp.setCost(i, i, 0)
+
 			return tsp
 		elif instanceType == "atsp":
 			print("FINISH")

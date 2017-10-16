@@ -20,3 +20,6 @@ class SymmetricTSP(TSP):
 
 	def getSize(self):
 		return self.costs.shape[0]
+
+	def averageCost(self):
+		return numpy.mean(self.costs)

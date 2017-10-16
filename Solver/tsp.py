@@ -12,3 +12,6 @@ class TSP(object):
 
 	def getSize(self):
 		raise NotImplementedError()
+
+	def averageCost(self):
+		raise NotImplementedError()
