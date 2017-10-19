@@ -7,36 +7,6 @@ import random
 import math
 import sys
 
-#reads cities from text file
-# def ReadCities():
-#     f = open(filename, 'r')
-#     cities = []
-#     for line in f:
-
-#         intList = list(map(int, line.split()))
-#         cities.append(intList)
-
-#     f.close()
-#     return cities
-
-# #generates a randomized tour
-# def RandomTour(cities):
-#     tempCities = list(cities)
-#     random.shuffle(tempCities)
-#     return tempCities
-
-# #calculates distance between two cities
-# def CalcDistances(cities):
-#     total = 0
-#     #calculate and add distance of first to last city
-#     for i in range(0, len(cities) - 1):
-#         total += int(round(math.sqrt(math.pow(cities[i][1] - cities[i+1][1],2) + math.pow(cities[i][2] - cities[i+1][2],2))))
-
-#     #add distance from first to last city
-#     total += int(round(math.sqrt(math.pow(cities[0][1] - cities[len(cities) - 1][1], 2) + math.pow(cities[0][2] - cities[len(cities) - 1][2], 2))))
-
-#     return total
-
 class Genetic(object):
 
 	def __init__(self, tsp):
@@ -183,60 +153,3 @@ class Genetic(object):
 					parent2Curr += 1
 
 		return child1, child2
-
-
-# class Tour(object):
-
-#     def __init__(self, cities=None,distance=None):
-#         self.cities = cities
-#         self.distance = distance
-
-#     def calcDistance(self):
-#         total = 0
-#         # calculate and add distance of first to last city
-#         for i in range(0, len(self.cities) - 1):
-#             total += int(round(
-#                 math.sqrt(math.pow(self.cities[i][1] - self.cities[i + 1][1], 2) + math.pow(self.cities[i][2] - self.cities[i + 1][2], 2))))
-
-#         # add distance from first to last city
-#         total += int(round(math.sqrt(
-#             math.pow(self.cities[0][1] - self.cities[len(self.cities) - 1][1], 2) + math.pow(self.cities[0][2] - self.cities[len(self.cities) - 1][2], 2))))
-
-#         self.distance = total
-
-#     def mutate(self, mutationRate):
-#         if(random.randrange(0,100) < mutationRate):
-
-#             a = random.randrange(0, len(self.cities))
-#             b = random.randrange(0, len(self.cities))
-
-#             self.cities[a], self.cities[b] = self.cities[b], self.cities[a]
-
-
-#         return self.cities
-
-#     def getCities(self):
-#         return self.cities
-
-#     def getDistance(self):
-#         if(self.distance == None):
-#             self.calcDistance()
-#         return self.distance
-
-
-# filename="tsp_example_1.txt"
-# filename=sys.argv[1]
-# outputFileName = sys.argv[1] + ".tour"
-
-# random.seed()
-# cityList = ReadCities()
-# bigCityList = Tour(cityList)
-# TestGeneration = Population(bigCityList)
-
-# #local minimum usually hit within 300,000 generations
-# for i in range(0,300000):
-#     TestGeneration.nextGeneration()
-
-# TestGeneration.printOptimalTour(outputFileName)
-
-
