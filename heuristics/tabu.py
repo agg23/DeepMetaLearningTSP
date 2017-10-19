@@ -51,9 +51,15 @@ def stochasticTwoOptWithEdges(perm):
 
 # Function that returns the best candidate, ordered by cost
 def locateBestCandidate(candidates):
-    # TODO: Modify to not sort
-    candidates.sort(key=lambda c: c["candidate"]["cost"])
-    best, edges = candidates[0]["candidate"], candidates[0]["edges"]
+    bestCandidate = candidates[0]
+    bestCost = bestCandidate["candidate"]["cost"]
+
+    for candidate in candidates:
+        if candidate["candidate"]["cost"] < bestCost:
+            bestCost = candidate["candidate"]["cost"]
+            bestCandidate = candidate
+
+    best, edges = bestCandidate["candidate"], bestCandidate["edges"]
     return best, edges
 
 
@@ -115,7 +121,7 @@ def search(tsp, maxIterations, maxTabu, maxCandidates, timeLimit):
                     tabuList.append(edge)
         maxIterations -= 1
 
-    return best
+    return best["permutation"]
 
 def searchIteration(tsp, maxIterations, maxTabu, maxCandidates, timeLimit):
     t_end = time.time() + timeLimit
