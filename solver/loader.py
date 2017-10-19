@@ -44,8 +44,6 @@ def loadTSPLib(path):
 
 				points.append((float(split[1]), float(split[2])))
 
-		print(points)
-
 		if dimension < 1 or dimension != len(points):
 			print("Invalid dimensions")
 			return None

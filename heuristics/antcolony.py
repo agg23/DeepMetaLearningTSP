@@ -1,11 +1,12 @@
 from heuristics.ant import Ant
 from threading import Lock, Condition
 
+import time
 import random
 import sys
 
 class AntColony:
-	def __init__(self, graph, num_ants, num_iterations):
+	def __init__(self, graph, num_ants, num_iterations, updateLambda = None):
 		self.graph = graph
 		self.num_ants = num_ants
 		self.num_iterations = num_iterations
@@ -13,6 +14,8 @@ class AntColony:
 
 		# condition var
 		self.cv = Condition()
+
+		self.updateLambda = updateLambda
 
 		self.reset()
 
@@ -24,7 +27,11 @@ class AntColony:
 
 	def start(self):
 		self.reset()
+		self.startTime = time.time()
 		self.iter_counter = 0
+
+		if self.updateLambda:
+			self.updateLambda(0, self.best_path_cost, 1, 1, self.startTime)
 
 		while self.iter_counter < self.num_iterations:
 			self.iteration()
@@ -39,6 +46,9 @@ class AntColony:
 			lock.release()
 
 			self.cv.release()
+
+			if self.updateLambda:
+				self.updateLambda(self.iter_counter, self.best_path_cost, 1, 1, self.startTime)
 
 	# one iteration involves spawning a number of ant threads
 	def iteration(self):
