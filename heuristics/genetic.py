@@ -37,7 +37,7 @@ import sys
 
 #     return total
 
-class Population(object):
+class Genetic(object):
 
 	def __init__(self, tsp):
 		self.tsp = tsp

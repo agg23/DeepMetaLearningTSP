@@ -33,8 +33,6 @@ class AntColony:
 			# wait until update calls notify()
 			self.cv.wait()
 
-			print("Wait completed")
-
 			lock = self.graph.lock
 			lock.acquire()
 			self.global_updating_rule()
@@ -48,7 +46,7 @@ class AntColony:
 		self.ant_counter = 0
 		self.iter_counter += 1
 		self.ants = self.create_ants()
-		print("iter_counter = %d\n" % (self.iter_counter,))
+		# print("iter_counter = %d\n" % (self.iter_counter,))
 		for ant in self.ants:
 			# print("starting ant = %d\n" % (ant.ID))
 			ant.start()
@@ -85,7 +83,7 @@ class AntColony:
 
 		if self.ant_counter == len(self.ants):
 			self.avg_path_cost /= len(self.ants)
-			print("Best: %s, %f, %d, %f\n" % (self.best_path_vec, self.best_path_cost, self.iter_counter, self.avg_path_cost,))
+			# print("Best: %s, %f, %d, %f\n" % (self.best_path_vec, self.best_path_cost, self.iter_counter, self.avg_path_cost,))
 			#outfile.write("\n%s\t%s\t%s" % (self.iter_counter, self.avg_path_cost, self.best_path_cost,))
 			self.cv.acquire()
 			self.cv.notify()
