@@ -3,4 +3,5 @@ from .tsp import TSP
 from .symTSP import SymmetricTSP
 from .asymTSP import AsymmetricTSP
 from .loader import loadTSPLib
-__all__ = ["asymTSP", "symTSP", "tsp", "loader", "utilities"]
+from .solution import Solution, ProblemSolution
+__all__ = ["asymTSP", "symTSP", "tsp", "loader", "utilities", "solution"]
