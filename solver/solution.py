@@ -4,8 +4,9 @@ import numpy
 from .utilities import calculateCost
 
 class Solution(object):
-	def __init__(self, tsp):
+	def __init__(self, tsp, optimalTour):
 		self.tsp = tsp
+		self.optimalTour = optimalTour
 		self.features = {}
 		self.solutions = {}
 		
