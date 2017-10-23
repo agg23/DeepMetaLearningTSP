@@ -1,4 +1,7 @@
 import sys
+import numpy
+
+from .utilities import calculateCost
 
 class Solution(object):
 	def __init__(self, tsp):
@@ -48,3 +51,8 @@ class ProblemSolution(object):
 			sumValue += solution["cost"]
 
 		self.averageCost = sumValue/self.averageCost
+
+class OptimalTour(object):
+	def __init__(self, tour, tsp):
+		self.tour = numpy.array(tour)
+		self.cost = calculateCost(self.tour, tsp)

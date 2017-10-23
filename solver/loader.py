@@ -1,5 +1,6 @@
-from solver.asymTSP import AsymmetricTSP
-from solver.symTSP import SymmetricTSP
+from .asymTSP import AsymmetricTSP
+from .symTSP import SymmetricTSP
+from .solution import OptimalTour
 import math
 
 def loadTSPLib(path):
@@ -71,6 +72,66 @@ def loadTSPLib(path):
 			print("Invalid instance type")
 			return None
 
+
+	except FileNotFoundError:
+		print("File not found")
+		return None
+
+def loadTSPLibTour(path, tsp):
+	try:
+		file = open(path, "r")
+
+		name = ""
+		instanceType = None
+		dimension = 0
+
+		enteredPoints = False
+		points = []
+
+		for line in file:
+			if not enteredPoints:
+				split = line.split(":")
+				attribute = split[0].strip().lower()
+				value = None
+
+				if len(split) > 1:
+					value = split[1].strip().lower()
+
+				if attribute == "name":
+					name = value
+				elif attribute == "type":
+					instanceType = value
+				elif attribute == "dimension":
+					dimension = int(value)
+				elif attribute == "tour_section":
+					enteredPoints = True
+			else:
+				line = line.strip()
+				
+				if line == "EOF" or line == "-1":
+					break
+
+				index = -1
+				try:
+					index = int(line)
+				except:
+					print("Malformed input")
+					return None
+
+				# Subtract 1, since indicies are 1 indexed in TSPLib
+				points.append(index - 1)
+
+		if dimension < 1 or dimension != len(points):
+			print("Invalid dimensions")
+			return None
+
+		if instanceType == "tour":
+			tour = OptimalTour(points, tsp)
+
+			return tour
+		else:
+			print("Invalid instance type %s" % (instanceType))
+			return None
 
 	except FileNotFoundError:
 		print("File not found")
