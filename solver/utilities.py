@@ -2,17 +2,7 @@ import numpy
 import random
 
 def generateInitialSolution(tsp):
-	size = tsp.getSize()
-
-	solution = numpy.arange(size)
-
-	for index in range(size):
-		randomIndex = random.randrange(index, size)
-		temp = solution[index]
-		solution[index] = solution[randomIndex]
-		solution[randomIndex] = temp
-
-	return solution
+	return numpy.random.permutation(tsp.getSize())
 
 def calculateCost(solution, tsp):
 	cost = 0
