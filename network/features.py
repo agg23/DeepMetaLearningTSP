@@ -72,6 +72,14 @@ def dijkstraShortestPath(tsp, origin, destination):
 
 # Solution selection
 
+def randomSolutions(tsp, n):
+	solutions = []
+
+	for i in range(n):
+		solutions.append(numpy.random.permutation(tsp.getSize()))
+
+	return solutions
+
 def greedySolutions(tsp, n):
 	solutions = []
 
@@ -115,7 +123,7 @@ def neighborSolutions(tsp, solution, n):
 			newSolution[selected] = solution[selected + 1]
 			newSolution[selected + 1] = solution[selected]
 
-		solutions.append(solution)
+		solutions.append(newSolution)
 
 	return solutions
 
