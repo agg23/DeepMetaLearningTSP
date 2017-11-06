@@ -23,10 +23,9 @@ def averageRatioNeighborsWithBetterSolution(tsp, randomSolutions, randomNeighbor
 	sum = 0.0
 	for i in range(len(randomSolutions)):
 		randomSolution = randomSolutions[i]
-		neighbors = randomNeighborSolutions[i]
-
 		randomCost = calculateCost(randomSolution, tsp)
 
+		neighbors = randomNeighborSolutions[i]
 		_, neighborCost = bestSolution(tsp, neighbors)
 
 		sum += neighborCost/randomCost
@@ -34,21 +33,54 @@ def averageRatioNeighborsWithBetterSolution(tsp, randomSolutions, randomNeighbor
 	return sum/len(randomSolutions)
 
 # QNS
-def randomSolutionQuality(tsp, randomSolutions, randomNeighborSolutions):
+def randomNeighborSolutionQuality(tsp, randomSolutions, randomNeighborSolutions):
 	sum = 0
 	count = 0
 	for i in range(len(randomSolutions)):
 		randomSolution = randomSolutions[i]
-		neighbors = randomNeighborSolutions[i]
-
 		randomCost = calculateCost(randomSolution, tsp)
 
-		for i in range(len(neighbors)):
-			neighborCost = calculateCost(neighbors[i], tsp)
+		neighbors = randomNeighborSolutions[i]
+
+		for j in range(len(neighbors)):
+			neighborCost = calculateCost(neighbors[j], tsp)
 
 			if neighborCost < randomCost:
 				sum += 1
 
 		count += len(neighbors)
+
+	return sum/count
+
+# QGS
+def greedySolutionQuality(tsp, randomSolutions, greedySolutions):
+	sum = 0
+	count = 0
+	for randomSolution in randomSolutions:
+		randomCost = calculateCost(randomSolution, tsp)
+
+		for greedySolution in greedySolutions:
+			greedyCost = calculateCost(greedySolution, tsp)
+
+			if greedyCost < randomCost:
+				sum += 1
+
+		count += len(greedySolutions)
+
+	return sum/count
+
+# RGR
+def averageRatioGreedySolution(tsp, randomSolutions, greedySolutions):
+	sum = 0
+	count = 0
+	for randomSolution in randomSolutions:
+		randomCost = calculateCost(randomSolution, tsp)
+
+		for greedySolution in greedySolutions:
+			greedyCost = calculateCost(greedySolution, tsp)
+
+			sum += greedyCost/randomCost
+			
+		count += len(greedySolutions)
 
 	return sum/count
