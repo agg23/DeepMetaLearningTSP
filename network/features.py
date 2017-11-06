@@ -127,17 +127,20 @@ def neighborSolutions(tsp, solution, n):
 
 	return solutions
 
-def bestNeighborSolution(tsp, solution, n):
-	solutions = neighborSolutions(tsp, solution, n)
-
+def bestSolution(tsp, solutions):
 	bestSolution = None
 	minCost = sys.maxsize
 
-	for i in range(n):
+	for i in range(len(solutions)):
 		cost = calculateCost(solutions[i], tsp)
 
 		if cost < minCost:
 			minCost = cost
 			bestSolution = solutions[i]
 
-	return bestSolution
+	return bestSolution, minCost
+
+def bestNeighborSolution(tsp, solution, n):
+	solutions = neighborSolutions(tsp, solution, n)
+
+	return bestSolution(tsp, solutions)
