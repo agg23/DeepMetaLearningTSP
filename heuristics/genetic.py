@@ -58,7 +58,7 @@ class Genetic(object):
 		self.sortCrossoverGroup(crossoverGroup)
 
 		parentSelect = self.determineParents(crossoverGroup)
-		children = self.crossover(crossoverGroup[parentSelect[0]][1], crossoverGroup[parentSelect[1]][1])
+		children = crossover(self.tsp, crossoverGroup[parentSelect[0]][1], crossoverGroup[parentSelect[1]][1])
 
 		child1Index = crossoverGroup[self.groupSize - 2][0]
 		child2Index = crossoverGroup[self.groupSize - 1][0]
@@ -113,43 +113,43 @@ class Genetic(object):
 
 		return crossoverGroup
 
-	#Using Partially Mapped Crossover
-	def crossover(self, parent1, parent2):
-		# create two crossover points
-		tourLength = self.tsp.getSize()
-		a = random.randint(0, tourLength - 1)
-		b = random.randint(a, tourLength)
-		# create two empty lists for the children
-		child1 = numpy.full(tourLength, -1, dtype=numpy.int)
-		child2 = numpy.full(tourLength, -1, dtype=numpy.int)
+#Using Partially Mapped Crossover
+def crossover(tsp, parent1, parent2):
+	# create two crossover points
+	tourLength = tsp.getSize()
+	a = random.randint(0, tourLength - 1)
+	b = random.randint(a, tourLength)
+	# create two empty lists for the children
+	child1 = numpy.full(tourLength, -1, dtype=numpy.int)
+	child2 = numpy.full(tourLength, -1, dtype=numpy.int)
 
-		# copy the crossover elements
-		for i in range(a, b):
-			child1[i] = parent2[i]
-			child2[i] = parent1[i]
+	# copy the crossover elements
+	for i in range(a, b):
+		child1[i] = parent2[i]
+		child2[i] = parent1[i]
 
-		for i in range(0, tourLength):
-			if (child1[i] == -1 and parent1[i] not in child1):
-				child1[i] = parent1[i]
-			if (child2[i] == -1 and parent2[i] not in child2):
-				child2[i] = parent2[i]
-		parent1Curr = a
-		parent2Curr = a
+	for i in range(0, tourLength):
+		if (child1[i] == -1 and parent1[i] not in child1):
+			child1[i] = parent1[i]
+		if (child2[i] == -1 and parent2[i] not in child2):
+			child2[i] = parent2[i]
+	parent1Curr = a
+	parent2Curr = a
 
-		# fills the empty spaces with any non-duplicates from the cities that were crossed over
-		for i in range(0, tourLength):
-			if (child1[i] == -1):
-				while (child1[i] == -1 and parent1Curr < b):
-					if (parent1[parent1Curr] not in child1):
-						child1[i] = parent1[parent1Curr]
+	# fills the empty spaces with any non-duplicates from the cities that were crossed over
+	for i in range(0, tourLength):
+		if (child1[i] == -1):
+			while (child1[i] == -1 and parent1Curr < b):
+				if (parent1[parent1Curr] not in child1):
+					child1[i] = parent1[parent1Curr]
 
-					parent1Curr += 1
+				parent1Curr += 1
 
-			if (child2[i] == -1):
-				while (child2[i] == -1 and parent2Curr < b):
-					if (parent2[parent2Curr] not in child2):
-						child2[i] = parent2[parent2Curr]
+		if (child2[i] == -1):
+			while (child2[i] == -1 and parent2Curr < b):
+				if (parent2[parent2Curr] not in child2):
+					child2[i] = parent2[parent2Curr]
 
-					parent2Curr += 1
+				parent2Curr += 1
 
-		return child1, child2
+	return child1, child2

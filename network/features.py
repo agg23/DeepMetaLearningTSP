@@ -2,6 +2,7 @@
 
 from collections import defaultdict, deque
 from solver.utilities import calculateCost
+from heuristics.genetic import crossover
 import sys
 import numpy
 
@@ -77,6 +78,35 @@ def randomSolutions(tsp, n):
 
 	for i in range(n):
 		solutions.append(numpy.random.permutation(tsp.getSize()))
+
+	return solutions
+
+def solutionPairs(tsp, randomSolutions, n):
+	numberRandomSolutions = len(randomSolutions)
+
+	solutions = []
+
+	i = 0
+	while i < n:
+		first = numpy.random.randint(numberRandomSolutions)
+		second = numpy.random.randint(numberRandomSolutions)
+
+		if first == second:
+			continue
+
+		solutions.append((randomSolutions[first], randomSolutions[second]))
+
+		i += 1
+
+	return solutions
+
+def childrenSolutionPairs(tsp, parentSolutionPairs):
+	solutions = []
+
+	for parentPair in parentSolutionPairs:
+		firstChild, secondChild = crossover(tsp, parentPair[0], parentPair[1])
+
+		solutions.append((firstChild, secondChild))
 
 	return solutions
 
