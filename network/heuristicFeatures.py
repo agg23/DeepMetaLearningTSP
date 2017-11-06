@@ -80,7 +80,45 @@ def averageRatioGreedySolution(tsp, randomSolutions, greedySolutions):
 			greedyCost = calculateCost(greedySolution, tsp)
 
 			sum += greedyCost/randomCost
-			
+
 		count += len(greedySolutions)
 
 	return sum/count
+
+def bestSolutionInPair(tsp, pair):
+	firstSolutionCost = calculateCost(pair[0], tsp)
+	secondSolutionCost = calculateCost(pair[1], tsp)
+
+	if firstSolutionCost < secondSolutionCost:
+		return pair[0], firstSolutionCost
+	else:
+		return pair[1], secondSolutionCost
+
+# QBO
+def proportionOffspringBetterSolution(tsp, parentSolutionPairs, childSolutionPairs):
+	sum = 0
+	for i in range(len(parentSolutionPairs)):
+		parentPair = parentSolutionPairs[i]
+		childPair = childSolutionPairs[i]
+
+		_, bestParentCost = bestSolutionInPair(tsp, parentPair)
+		_, bestChildCost = bestSolutionInPair(tsp, childPair)
+
+		if bestChildCost < bestParentCost:
+			sum += 1
+
+	return sum/len(parentSolutionPairs)
+
+# RCP
+def averageRatioOffspringBetterSolution(tsp, parentSolutionPairs, childSolutionPairs):
+	sum = 0
+	for i in range(len(parentSolutionPairs)):
+		parentPair = parentSolutionPairs[i]
+		childPair = childSolutionPairs[i]
+
+		_, bestParentCost = bestSolutionInPair(tsp, parentPair)
+		_, bestChildCost = bestSolutionInPair(tsp, childPair)
+
+		sum += bestChildCost/bestParentCost
+
+	return sum/len(parentSolutionPairs)
