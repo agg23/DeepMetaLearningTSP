@@ -122,3 +122,21 @@ def averageRatioOffspringBetterSolution(tsp, parentSolutionPairs, childSolutionP
 		sum += bestChildCost/bestParentCost
 
 	return sum/len(parentSolutionPairs)
+
+# RRQ
+def averageTimesOffspringBetterSolution(tsp, parentSolutionPairs, childSolutionPairs):
+	sum = 0
+	for i in range(len(parentSolutionPairs)):
+		parentPair = parentSolutionPairs[i]
+		childPair = childSolutionPairs[i]
+
+		for j in range(2):
+			childCost = calculateCost(childPair[j], tsp)
+
+			for k in range(2):
+				parentCost = calculateCost(parentPair[k], tsp)
+
+				if childCost < parentCost:
+					sum += 1
+
+	return sum/(len(parentSolutionPairs) * 4)
