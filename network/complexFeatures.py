@@ -4,6 +4,7 @@ import numpy
 from .features import dijkstra
 
 # May be different than Kanda's implementation
+# AGD
 def averageShortestPathGeodesicDistance(tsp):
 	costSum = 0
 	edgeCount = 0
@@ -25,16 +26,20 @@ def averageShortestPathGeodesicDistance(tsp):
 
 	return costSum/edgeCount
 
+# AGD v2
 def averageGeodesicDistance(tsp):
 	return numpy.mean(tsp.costs[numpy.nonzero(tsp.costs)])
 
+# GE
 def globalEfficiency(tsp):
 	return numpy.mean(1/tsp.costs[numpy.nonzero(tsp.costs)])
 
+# HM
 def harmonicMeanGeodesicDistance(tsp):
 	# Number of edges minus diagonal
 	return (tsp.getSize() * (tsp.getSize() - 1)) * numpy.sum(1/tsp.costs[numpy.nonzero(tsp.costs)])
 
+# NV
 def networkVulnerability(cache, tsp):
 	ge = cache.globalEfficiency
 	maxVulnerability = 0
