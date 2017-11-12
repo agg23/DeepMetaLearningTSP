@@ -123,7 +123,7 @@ def greedySolutions(tsp, n):
 			minCity = 0
 			minCost = sys.maxsize
 			for city in range(tsp.getSize()):
-				if city == last:
+				if city == last or city in solution:
 					continue
 
 				cost = tsp.getCost(last, city)
@@ -132,7 +132,7 @@ def greedySolutions(tsp, n):
 					minCity = city
 					minCost = cost
 
-			solution.append(city)
+			solution.append(minCity)
 
 		solutions.append(numpy.array(solution))
 
