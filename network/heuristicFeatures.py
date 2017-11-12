@@ -1,5 +1,5 @@
 from solver.utilities import calculateCost
-from .features import bestSolution
+from .features import bestSolution, edges
 
 import sys
 
@@ -140,3 +140,48 @@ def averageTimesOffspringBetterSolution(tsp, parentSolutionPairs, childSolutionP
 					sum += 1
 
 	return sum/(len(parentSolutionPairs) * 4)
+
+# ISE
+def averageSharedEdges(tsp, greedyEdges):
+	sum = 0
+	n = len(greedyEdges)
+
+	for i in range(n):
+		firstEdgeSet = greedyEdges[i]
+
+		for j in range(n):
+			secondEdgeSet = greedyEdges[i]
+
+			sum += len(firstEdgeSet.intersection(secondEdgeSet)) / n
+
+	return 2 * sum / (n * (n - 1))
+
+# RFM
+def relativeFrequencyCommonGreedyEdge(tsp, greedyEdges):
+	edgeMap = {}
+
+	# Build frequency map of edges
+	for edgeSet in greedyEdges:
+		for edge in edgeSet:
+			if edge in edgeMap:
+				edgeMap[edge] += 1
+			else:
+				edgeMap[edge] = 1
+
+	# Get highest frequency edge
+	count = 0
+	maxEdge = None
+	for edge in edgeMap:
+		edgeCount = edgeMap[edge]
+
+		if edgeCount > count:
+			count = edgeCount
+			maxEdge = edge
+
+	sum = 0
+
+	for edgeSet in greedyEdges:
+		if maxEdge in edgeSet:
+			sum += 1
+
+	return sum / len(greedyEdges)

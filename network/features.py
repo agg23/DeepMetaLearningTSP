@@ -110,6 +110,26 @@ def childrenSolutionPairs(tsp, parentSolutionPairs):
 
 	return solutions
 
+def edges(tsp, solutions):
+	allSolutionEdges = []
+
+	for solution in solutions:
+		solutionEdges = set()
+
+		for i in range(1, len(solution)):
+			first = solution[i - 1]
+			second = solution[i]
+
+			solutionEdges.add((first, second))
+
+		if len(solution) > 1:
+			# Add final solution
+			solutionEdges.add((solution[len(solution) - 1], solution[0]))
+
+		allSolutionEdges.append(solutionEdges)
+
+	return allSolutionEdges
+
 def greedySolutions(tsp, n):
 	solutions = []
 
