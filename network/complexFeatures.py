@@ -55,4 +55,35 @@ def networkVulnerabilityAt(i, tsp, ge):
 	# Since assuming fully connected, first term will always be 1
 	return 1/(tsp.getSize() - (tsp.getSize() - 1)) * ge - numpy.mean(1/tsp.costs[i,numpy.nonzero(tsp.costs[i,])])
 
+# CCT
+def clusteringCoefficientTransitivity(tsp):
+	numberTriangles = 0
+	numberTriples = 0
+
+	n = tsp.getSize()
+
+	for i in range(n):
+		for j in range(i + 1, n):
+			for k in range(j + 1, n):
+				numberTriangles += tsp.getAdjacent(i, j) * tsp.getAdjacent(i, k) * tsp.getAdjacent(j, k)
+				numberTriples += tsp.getAdjacent(i, j) * tsp.getAdjacent(i, k) + tsp.getAdjacent(j, i) * tsp.getAdjacent(j, k) + tsp.getAdjacent(k, i) * tsp.getAdjacent(k, j)
+
+	return 3 * numberTriangles / numberTriples
+
+# May be different than Kanda's implementation
+# ACC
+def alternateClusteringCoefficient(tsp):
+	sum = 0
+	n = tsp.getSize()
+
+	for i in range(n):
+		for j in range(n):
+			for k in range(j + 1, n):
+				numberTriangles = tsp.getAdjacent(i, j) * tsp.getAdjacent(i, k) * tsp.getAdjacent(j, k)
+				numberTriples = tsp.getAdjacent(i, j) * tsp.getAdjacent(i, k) + tsp.getAdjacent(j, i) * tsp.getAdjacent(j, k) + tsp.getAdjacent(k, i) * tsp.getAdjacent(k, j)
+
+				sum += numberTriangles / numberTriples
+
+	return sum / n
+
 # CCT, ACC, CCW, NCC, MDV, CED, EDD, TE, PCV, ER, CCA omitted due to irrelevance to fully connected graphs
