@@ -130,6 +130,17 @@ def edges(tsp, solutions):
 
 	return allSolutionEdges
 
+def connectedEdgeCount(tsp, i):
+	sum = 0
+
+	for j in range(tsp.getSize()):
+		if i == j:
+			continue
+
+		sum += tsp.getAdjacent(i, j)
+
+	return sum
+
 def greedySolutions(tsp, n):
 	solutions = []
 

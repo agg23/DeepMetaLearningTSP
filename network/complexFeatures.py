@@ -1,7 +1,7 @@
 import sys
 import numpy
 
-from .features import dijkstra
+from .features import dijkstra, connectedEdgeCount
 
 # May be different than Kanda's implementation
 # AGD
@@ -83,6 +83,28 @@ def alternateClusteringCoefficient(tsp):
 				numberTriples = tsp.getAdjacent(i, j) * tsp.getAdjacent(i, k) + tsp.getAdjacent(j, i) * tsp.getAdjacent(j, k) + tsp.getAdjacent(k, i) * tsp.getAdjacent(k, j)
 
 				sum += numberTriangles / numberTriples
+
+	return sum / n
+
+# CCW
+def weightedClusteringCoefficient(tsp):
+	sum = 0
+	n = tsp.getSize()
+
+	for i in range(n):
+		vertexCosts = 0
+		for j in range(n):
+			if i == j:
+				continue
+
+			vertexCosts += tsp.getCost(i, j)
+
+		innerSum = 0
+		for j in range(n):
+			for k in range(j + 1, n):
+				innerSum += (tsp.getCost(i, j) + tsp.getCost(i, k)) / 2 * tsp.getAdjacent(i, j) * tsp.getAdjacent(i, k) * tsp.getAdjacent(j, k)
+
+		sum += innerSum / (vertexCosts * (connectedEdgeCount(tsp, i) - 1))
 
 	return sum / n
 
