@@ -1,5 +1,8 @@
+import numpy
+
 class TSP(object):
-	name = None
+	def __init__(self, size):
+		self.adjacent = numpy.zeros(shape=(size, size))
 
 	def isAsymmetric(self):
 		raise NotImplementedError()
@@ -9,6 +12,16 @@ class TSP(object):
 
 	def setCost(self, cityA, cityB, cost):
 		raise NotImplementedError()
+
+	def getAdjacent(self, cityA, cityB):
+		return self.adjacent[cityA][cityB] == 1
+
+	def setAdjacent(self, cityA, cityB, adjacent):
+		value = 0
+		if adjacent:
+			value = 1
+
+		self.adjacent[cityA][cityB] = value
 
 	def getSize(self):
 		raise NotImplementedError()
