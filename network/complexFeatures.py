@@ -185,4 +185,38 @@ def targetEntropy(tsp):
 
 	return - sum / n
 
-# CCT, ACC, CCW, NCC, MDV, CED, EDD, TE, PCV, ER, CCA omitted due to irrelevance to fully connected graphs
+# PCV
+def vertexParticipationCoefficient(tsp):
+	# TODO: Finish
+	pass
+
+# ER
+def edgeReciprocity(tsp):
+	sum = 0
+	n = tsp.getSize()
+
+	for i in range(n):
+		for j in range(n):
+			if tsp.getAdjacent(i, j) and tsp.getAdjacent(j, i):
+				sum += 1
+
+	return sum / numberEdges(tsp)
+
+# CCA
+def adjacencyCorrelationCoefficient(tsp):
+	numeratorSum = 0
+	denominatorSum = 0
+	n = tsp.getSize()
+
+	aBar = numpy.mean(tsp.adjacent)
+
+	for i in range(n):
+		for j in range(n):
+			numeratorSum += (tsp.getAdjacent(i, j) - aBar) * (tsp.getAdjacent(j, i) - aBar)
+			denominatorSum += pow((tsp.getAdjacent(i, j) - aBar), 2)
+
+	# Instead of returning infinity for dividing by 0, return -1
+	if denominatorSum == 0:
+		return -1
+
+	return numeratorSum / denominatorSum
