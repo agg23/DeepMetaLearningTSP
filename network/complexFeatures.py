@@ -1,5 +1,6 @@
 import sys
 import numpy
+import math
 
 from .features import dijkstra, dijkstraConnectedPath, dijkstraShortestPathWithData
 from .simpleFeatures import numberEdges
@@ -164,5 +165,24 @@ def edgeDegreeCorrelation(tsp, connectedEdgeCounts):
 
 	secondDenominator = pow(secondNumerator / (2 * m), 2)
 	return (firstNumerator / m - secondDenominator) / (firstDenominator / (2 * m) - secondDenominator)
+
+# EDD
+def entropyDegreeDistribution(tsp):
+	# TODO: Finish
+	pass
+
+# TE
+def targetEntropy(tsp):
+	sum = 0
+	n = tsp.getSize()
+
+	for i in range(n):
+		for j in range(n):
+			if tsp.getAdjacent(j, i):
+				cost = tsp.getCost(i, j)
+				if cost != 0:
+					sum += cost * math.log(cost, 2)
+
+	return - sum / n
 
 # CCT, ACC, CCW, NCC, MDV, CED, EDD, TE, PCV, ER, CCA omitted due to irrelevance to fully connected graphs
