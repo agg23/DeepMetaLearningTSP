@@ -56,9 +56,52 @@ def dijkstra(tsp, initial):
 
 	return visited, path
 
-
 def dijkstraShortestPath(tsp, origin, destination):
 	visited, paths = dijkstra(tsp, origin)
+	return dijkstraShortestPathWithData(visited, paths, origin, destination)
+
+# Builds a map of the shortest connected paths (used for asymmetrical TSP instances)
+def dijkstraConnectedPath(tsp, initial):
+	visited = {initial: 0}
+	path = {}
+
+	nodes = set(range(tsp.getSize()))
+
+	while nodes:
+		min_node = None
+		for node in nodes:
+			if node in visited:
+				if min_node is None:
+					min_node = node
+				elif visited[node] < visited[min_node]:
+					min_node = node
+		if min_node is None:
+			break
+
+		nodes.remove(min_node)
+		current_weight = visited[min_node]
+
+		for second_node in range(tsp.getSize()):
+			try:
+				connected = tsp.getAdjacent(min_node, second_node)
+				# A large value (big M)
+				weight = 100000
+				if connected:
+					weight = 1
+				weight = current_weight + weight
+			except:
+				continue
+			if second_node not in visited or weight < visited[second_node]:
+				visited[second_node] = weight
+				path[second_node] = min_node
+
+	return visited, path
+
+def dijkstraShortestConnectedPath(tsp, origin, destination):
+	visited, paths = dijkstraConnectedPath(tsp, origin)
+	return dijkstraShortestPathWithData(visited, paths, origin, destination)
+
+def dijkstraShortestPathWithData(visited, paths, origin, destination):
 	full_path = deque()
 	_destination = paths[destination]
 
@@ -140,6 +183,14 @@ def connectedEdgeCount(tsp, i):
 		sum += tsp.getAdjacent(i, j)
 
 	return sum
+
+def connectedEdgeCounts(tsp):
+	edgeCounts = []
+
+	for i in range(tsp.getSize()):
+		edgeCounts.append(connectedEdgeCount(tsp, i))
+
+	return edgeCounts
 
 def greedySolutions(tsp, n):
 	solutions = []

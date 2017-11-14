@@ -1,7 +1,7 @@
 import sys
 import numpy
 
-from .features import dijkstra, connectedEdgeCount
+from .features import dijkstra, dijkstraConnectedPath, dijkstraShortestPathWithData
 
 # May be different than Kanda's implementation
 # AGD
@@ -87,7 +87,7 @@ def alternateClusteringCoefficient(tsp):
 	return sum / n
 
 # CCW
-def weightedClusteringCoefficient(tsp):
+def weightedClusteringCoefficient(tsp, connectedEdgeCounts):
 	sum = 0
 	n = tsp.getSize()
 
@@ -104,7 +104,37 @@ def weightedClusteringCoefficient(tsp):
 			for k in range(j + 1, n):
 				innerSum += (tsp.getCost(i, j) + tsp.getCost(i, k)) / 2 * tsp.getAdjacent(i, j) * tsp.getAdjacent(i, k) * tsp.getAdjacent(j, k)
 
-		sum += innerSum / (vertexCosts * (connectedEdgeCount(tsp, i) - 1))
+		sum += innerSum / (vertexCosts * (connectedEdgeCounts[i] - 1))
+
+	return sum / n
+
+# NCC
+def networkCyclicCoefficient(tsp, connectedEdgeCounts):
+	sum = 0
+	n = tsp.getSize()
+
+	for i in range(n):
+		innerSum = 0
+		for j in range(n):
+			if j == i:
+				continue
+
+			visited = None
+			paths = None
+			for k in range(n):
+				if k == i or k == j:
+					continue
+				# Optimization: Only run dijkstra's if both verticies are connected to i
+				if tsp.getAdjacent(i, j) and tsp.getAdjacent(i, k):
+					# Optimiaztion: Lazy load dijkstra's for each j
+					if visited == None:
+						visited, paths = dijkstraConnectedPath(tsp, j)
+
+					length, _ = dijkstraShortestPathWithData(visited, paths, j, k)
+					# Add 1 to path length (as we need to include the edge from either i to j or i to k)
+					innerSum += 1 / (length + 1)
+
+		sum += 2 * innerSum / (connectedEdgeCounts[i] * (connectedEdgeCounts[i] - 1))
 
 	return sum / n
 
