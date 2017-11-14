@@ -39,8 +39,7 @@ def sumCostNearestNeighbor(tsp):
 	return sumValue
 
 def numberEdges(tsp):
-	# Does nothing
-	return tsp.getSize() * tsp.getSize()
+	return numpy.sum(tsp.adjacent)
 
 def lowestEdgeCost(tsp):
 	return numpy.amin(tsp.costs)

@@ -2,6 +2,7 @@ import sys
 import numpy
 
 from .features import dijkstra, dijkstraConnectedPath, dijkstraShortestPathWithData
+from .simpleFeatures import numberEdges
 
 # May be different than Kanda's implementation
 # AGD
@@ -137,5 +138,31 @@ def networkCyclicCoefficient(tsp, connectedEdgeCounts):
 		sum += 2 * innerSum / (connectedEdgeCounts[i] * (connectedEdgeCounts[i] - 1))
 
 	return sum / n
+
+# MDV
+def maxVertexDegree(connectedEdgeCounts):
+	return max(connectedEdgeCounts)
+
+# CED
+def edgeDegreeCorrelation(tsp, connectedEdgeCounts):
+	firstNumerator = 0
+	secondNumerator = 0
+	firstDenominator = 0
+	n = tsp.getSize()
+	m = numberEdges(tsp)
+
+	for i in range(n):
+		for j in range(i + 1, n):
+			# Optimization: Process all loops at once
+			mi = connectedEdgeCounts[i]
+			mj = connectedEdgeCounts[j]
+			adjacent = tsp.getAdjacent(i, j)
+
+			firstNumerator += mi * mj * adjacent
+			secondNumerator += (mi + mj) * adjacent
+			firstDenominator += (mi * mi + mj * mj) * adjacent
+
+	secondDenominator = pow(secondNumerator / (2 * m), 2)
+	return (firstNumerator / m - secondDenominator) / (firstDenominator / (2 * m) - secondDenominator)
 
 # CCT, ACC, CCW, NCC, MDV, CED, EDD, TE, PCV, ER, CCA omitted due to irrelevance to fully connected graphs
