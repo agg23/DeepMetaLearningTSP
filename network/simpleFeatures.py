@@ -42,13 +42,13 @@ def numberEdges(tsp):
 	return numpy.sum(tsp.adjacent)
 
 def lowestEdgeCost(tsp):
-	return numpy.amin(tsp.costs)
+	return numpy.amin(numpy.nonzero(tsp.costs))
 
 def highestEdgeCost(tsp):
 	return numpy.amax(tsp.costs)
 
 def averageEdgeCost(tsp):
-	return numpy.mean(tsp.costs)
+	return numpy.mean(numpy.nonzero(tsp.costs))
 
 def standardDeviationEdgeCost(tsp):
 	return numpy.std(tsp.costs)
