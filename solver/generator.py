@@ -29,5 +29,6 @@ class Generator(object):
 
 			# Add diagonal
 			tsp.setCost(i, i, 0)
+			tsp.setAdjacent(i, i, False)
 
 		return tsp
