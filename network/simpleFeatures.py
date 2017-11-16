@@ -3,7 +3,7 @@ import numpy
 
 from .features import vertexCost, buildVertexCosts
 
-def numberVerticies(tsp):
+def numberVertices(tsp):
 	return tsp.getSize()
 
 def lowestVertexCost(costs):
