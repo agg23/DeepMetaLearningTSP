@@ -42,13 +42,13 @@ def numberEdges(tsp):
 	return numpy.sum(tsp.adjacent)
 
 def lowestEdgeCost(tsp):
-	return numpy.amin(numpy.nonzero(tsp.costs))
+	return numpy.amin(tsp.costs[numpy.nonzero(tsp.costs)])
 
 def highestEdgeCost(tsp):
 	return numpy.amax(tsp.costs)
 
 def averageEdgeCost(tsp):
-	return numpy.mean(numpy.nonzero(tsp.costs))
+	return numpy.mean(tsp.costs[numpy.nonzero(tsp.costs)])
 
 def standardDeviationEdgeCost(tsp):
 	return numpy.std(tsp.costs)
@@ -57,7 +57,7 @@ def medianEdgeCost(tsp):
 	return numpy.median(tsp.costs)
 
 def sumNLowestEdgeCost(tsp, n):
-	sortedCosts = numpy.sort(tsp.costs, axis=None)
+	sortedCosts = numpy.sort(tsp.costs[numpy.nonzero(tsp.costs)], axis=None)
 
 	sumValue = 0
 	for i in range(0, max(n, tsp.getSize())):

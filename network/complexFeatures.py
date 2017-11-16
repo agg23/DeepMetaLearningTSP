@@ -42,20 +42,19 @@ def harmonicMeanGeodesicDistance(tsp):
 	return (tsp.getSize() * (tsp.getSize() - 1)) * numpy.sum(1/tsp.costs[numpy.nonzero(tsp.costs)])
 
 # NV
-def networkVulnerability(cache, tsp):
-	ge = cache.globalEfficiency
+def networkVulnerability(tsp, globalEfficiency):
 	maxVulnerability = 0
 	for city in range(tsp.getSize()):
-		vulnerability = networkVulnerabilityAt(city, tsp, ge)
+		vulnerability = networkVulnerabilityAt(city, tsp, globalEfficiency)
 
 		if vulnerability > maxVulnerability:
 			maxVulnerability = vulnerability
 
 	return maxVulnerability
 
-def networkVulnerabilityAt(i, tsp, ge):
+def networkVulnerabilityAt(i, tsp, globalEfficiency):
 	# Since assuming fully connected, first term will always be 1
-	return 1/(tsp.getSize() - (tsp.getSize() - 1)) * ge - numpy.mean(1/tsp.costs[i,numpy.nonzero(tsp.costs[i,])])
+	return 1/(tsp.getSize() - (tsp.getSize() - 1)) * globalEfficiency - numpy.mean(1/tsp.costs[i,numpy.nonzero(tsp.costs[i,])])
 
 # CCT
 def clusteringCoefficientTransitivity(tsp):
