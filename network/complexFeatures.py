@@ -127,11 +127,17 @@ def networkCyclicCoefficient(tsp, connectedEdgeCounts):
 					continue
 				# Optimization: Only run dijkstra's if both verticies are connected to i
 				if tsp.getAdjacent(i, j) and tsp.getAdjacent(i, k):
-					# Optimiaztion: Lazy load dijkstra's for each j
-					if visited == None:
-						visited, paths = dijkstraConnectedPath(tsp, j)
+					length = 0
+					if tsp.getAdjacent(j, k):
+						# Optimization: Short circuit if shortest path is a simple triangle
+						length = 2
+					else:
+						# Optimiaztion: Lazy load dijkstra's for each j
+						if visited == None:
+							visited, paths = dijkstraConnectedPath(tsp, j)
 
-					length, _ = dijkstraShortestPathWithData(visited, paths, j, k)
+						length, _ = dijkstraShortestPathWithData(visited, paths, j, k)
+
 					# Add 1 to path length (as we need to include the edge from either i to j or i to k)
 					innerSum += 1 / (length + 1)
 
