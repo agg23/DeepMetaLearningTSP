@@ -33,8 +33,12 @@ def printUpdate(firstTitle, firstValue, energy, accept, improve, startTime, tota
 			   time_string(elapsed), time_string(remain)), file=sys.stderr, end="\r")
 		sys.stderr.flush()
 
-def solveTabu(tsp, maxCandidates, maxTabu, maxIterations, timeLimit):
-	updateLambda = lambda firstValue, energy, accept, improve, startTime, totalIterations: printUpdate("   Iteration", firstValue, energy, accept, improve, startTime, totalIterations)
+def solveTabu(tsp, maxCandidates, maxTabu, maxIterations, timeLimit, printUpdates=True):
+	updateLambda = lambda firstValue, energy, accept, improve, startTime, totalIterations: None
+
+	if printUpdates:
+		updateLambda = lambda firstValue, energy, accept, improve, startTime, totalIterations: printUpdate("   Iteration", firstValue, energy, accept, improve, startTime, totalIterations)
+
 	return tabu.search(tsp, maxIterations, maxTabu, maxCandidates, timeLimit, updateLambda)
 
 def solveSimAnneal(tsp, startTemp, endTemp, iterations, printUpdateFreq = 100):
@@ -42,36 +46,48 @@ def solveSimAnneal(tsp, startTemp, endTemp, iterations, printUpdateFreq = 100):
 	sim.Tmin = endTemp
 	sim.Tmax = startTemp
 	sim.steps = iterations
-	sim.updates = printUpdateFreq
+
+	if not printUpdateFreq:
+		sim.updates = 0
+	else:
+		sim.updates = printUpdateFreq
 
 	route, cost = sim.anneal()
 	return route
 
-def solveGrasp(tsp, maxNoImprovements, maxIterations, alpha, timeLimit):
-	updateLambda = lambda firstValue, energy, accept, improve, startTime, totalIterations: printUpdate("   Iteration", firstValue, energy, accept, improve, startTime, totalIterations)
+def solveGrasp(tsp, maxNoImprovements, maxIterations, alpha, timeLimit, printUpdates=True):
+	updateLambda = lambda firstValue, energy, accept, improve, startTime, totalIterations: None
+
+	if printUpdates:
+		updateLambda = lambda firstValue, energy, accept, improve, startTime, totalIterations: printUpdate("   Iteration", firstValue, energy, accept, improve, startTime, totalIterations)
+
 	return grasp.search(tsp, maxIterations, maxNoImprovements, alpha, timeLimit, updateLambda)
 
-def solveGenetic(tsp, generations):
+def solveGenetic(tsp, generations, printUpdates=True):
 	start = time.time()
 
 	genetic = Genetic(tsp)
 
 	for i in range(0, generations):	
 		# TODO: Add accept and improve
-		printUpdate("  Generation", i, genetic.minDistance, 100.0 * 1, 100.0 * 1, start, generations)
+		if printUpdates:
+			printUpdate("  Generation", i, genetic.minDistance, 100.0 * 1, 100.0 * 1, start, generations)
 		
 		genetic.nextGeneration()
 
 	return genetic.entirePopulation[genetic.minIndex]
 
-def solveAntColony(tsp, antCount, iterations, repetitions):
+def solveAntColony(tsp, antCount, iterations, repetitions, printUpdates=True):
 	try:
 		graph = AntGraph(tsp)
 		bestPath = None
 		bestCost = sys.maxsize
 		for i in range(0, repetitions):
 			graph.reset_tau()
-			updateLambda = lambda firstValue, energy, accept, improve, startTime: printUpdate("   Iteration", firstValue + i * iterations, energy, accept, improve, startTime, iterations * repetitions)
+			updateLambda = lambda firstValue, energy, accept, improve, startTime: None
+
+			if printUpdates:
+				updateLambda = lambda firstValue, energy, accept, improve, startTime: printUpdate("   Iteration", firstValue + i * iterations, energy, accept, improve, startTime, iterations * repetitions)
 			colony = AntColony(graph, antCount, iterations, updateLambda)
 			colony.start()
 			if colony.best_path_cost < bestCost:
