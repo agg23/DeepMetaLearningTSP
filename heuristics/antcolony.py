@@ -34,9 +34,10 @@ class AntColony:
 			self.updateLambda(0, self.best_path_cost, 1, 1, self.startTime)
 
 		while self.iter_counter < self.num_iterations:
-			self.iteration()
-
+			# print("iteration %d" % (self.iter_counter))
 			self.cv.acquire()
+
+			self.iteration()
 			# wait until update calls notify()
 			self.cv.wait()
 
