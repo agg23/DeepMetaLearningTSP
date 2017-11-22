@@ -27,7 +27,9 @@ import random
 def stochasticTwoOptWithEdges(perm):
 	result = numpy.copy(perm)
 	size = result.shape[0]
-	p1, p2 = random.randrange(0,size), random.randrange(0,size)
+	randomIndices = numpy.random.randint(0, size, 2)
+	p1 = randomIndices[0]
+	p2 = randomIndices[1]
 	exclude = set([p1])
 	if p1 == 0:
 		exclude.add(size-1)
@@ -40,14 +42,14 @@ def stochasticTwoOptWithEdges(perm):
 		exclude.add(p1+1)
 
 	while p2 in exclude:
-		p2 = random.randrange(0,size)
+		p2 = random.randint(0, size - 1)
 
 	if p2<p1:
 		p1, p2 = p2, p1
 
 	result[p1:p2] = numpy.flipud(result[p1:p2])
 
-	return result, [(perm[p1-1],perm[p1]),(perm[p2-1],perm[p2])]
+	return result, [(perm[p1-1], perm[p1]), (perm[p2-1], perm[p2])]
 
 # Function that returns the best candidate, ordered by cost
 def locateBestCandidate(candidates):
@@ -66,8 +68,8 @@ def locateBestCandidate(candidates):
 def isTabu(perm, tabuList, timeLimit):
 	if time.time() > timeLimit:
 		return False
-	count = 0
-	count += 1
+	count = 1
+
 	result = False
 	size = len(perm)
 	for index, edge in enumerate(perm):
@@ -80,7 +82,6 @@ def isTabu(perm, tabuList, timeLimit):
 			break
 
 	return result
-
 
 def generateCandidates(best, tabuList, tsp, timeLimit):
 	permutation, edges, result = [], None, {}
