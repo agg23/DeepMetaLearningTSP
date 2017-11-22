@@ -47,7 +47,7 @@ def stochasticTwoOptWithEdges(perm):
 
 	result[p1:p2] = numpy.flipud(result[p1:p2])
 
-	return result, [[perm[p1-1],perm[p1]],[perm[p2-1],perm[p2]]]
+	return result, [(perm[p1-1],perm[p1]),(perm[p2-1],perm[p2])]
 
 # Function that returns the best candidate, ordered by cost
 def locateBestCandidate(candidates):
@@ -75,7 +75,7 @@ def isTabu(perm, tabuList, timeLimit):
 			edge2 = perm[0]
 		else:
 			edge2 = perm[index + 1]
-		if [edge, edge2] in tabuList:
+		if (edge, edge2) in tabuList:
 			result = True
 			break
 
@@ -103,7 +103,7 @@ def search(tsp, maxIterations, maxTabu, maxCandidates, timeLimit, updateLambda =
 	best = {}
 	best["permutation"] = generateInitialSolution(tsp)
 	best["cost"] = calculateCost(best["permutation"], tsp)
-	tabuList = []
+	tabuList = set()
 
 	totalIterations = 0
 	if updateLambda:
@@ -133,7 +133,7 @@ def search(tsp, maxIterations, maxTabu, maxCandidates, timeLimit, updateLambda =
 			# Update the taboo list
 			for edge in bestCandidateEdges:
 				if len(tabuList) < maxTabu:
-					tabuList.append(edge)
+					tabuList.add(edge)
 		maxIterations -= 1
 
 		totalIterations += 1
