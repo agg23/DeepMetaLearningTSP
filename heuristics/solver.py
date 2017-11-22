@@ -97,4 +97,4 @@ def solveAntColony(tsp, antCount, iterations, repetitions, printUpdates=True):
 		return bestPath
 
 	except Exception as e:
-		print("exception: " + str(e))
+		print("Ant exception: " + str(e))

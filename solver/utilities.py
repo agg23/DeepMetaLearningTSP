@@ -7,7 +7,9 @@ def generateInitialSolution(tsp):
 def calculateCost(solution, tsp):
 	cost = 0
 
-	if solution.shape[0] < 2:
+	shape = solution.shape
+
+	if len(shape) == 0 or shape[0] < 2:
 		return cost
 
 	previous = None
