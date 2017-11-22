@@ -106,12 +106,7 @@ class Genetic(object):
 
 	#insertion sort crossover group
 	def sortCrossoverGroup(self, crossoverGroup):
-		for i in range(0, len(crossoverGroup) - 1):
-			for j in range(0, len(crossoverGroup) - 1):
-				if(calculateCost(crossoverGroup[j][1], self.tsp) > calculateCost(crossoverGroup[j+1][1], self.tsp)):
-					crossoverGroup[j], crossoverGroup[j+1] = crossoverGroup[j+1], crossoverGroup[j]
-
-		return crossoverGroup
+		crossoverGroup.sort(key = lambda group: calculateCost(group[1], self.tsp))
 
 #Using Partially Mapped Crossover
 def crossover(tsp, parent1, parent2):
@@ -123,16 +118,23 @@ def crossover(tsp, parent1, parent2):
 	child1 = numpy.full(tourLength, -1, dtype=numpy.int)
 	child2 = numpy.full(tourLength, -1, dtype=numpy.int)
 
+	child1Cities = set()
+	child2Cities = set()
+
 	# copy the crossover elements
 	for i in range(a, b):
 		child1[i] = parent2[i]
+		child1Cities.add(parent2[i])
 		child2[i] = parent1[i]
+		child2Cities.add(parent1[i])
 
 	for i in range(0, tourLength):
-		if (child1[i] == -1 and parent1[i] not in child1):
+		if (child1[i] == -1 and parent1[i] not in child1Cities):
 			child1[i] = parent1[i]
-		if (child2[i] == -1 and parent2[i] not in child2):
+			child1Cities.add(parent1[i])
+		if (child2[i] == -1 and parent2[i] not in child2Cities):
 			child2[i] = parent2[i]
+			child2Cities.add(parent2[i])
 	parent1Curr = a
 	parent2Curr = a
 
@@ -140,15 +142,17 @@ def crossover(tsp, parent1, parent2):
 	for i in range(0, tourLength):
 		if (child1[i] == -1):
 			while (child1[i] == -1 and parent1Curr < b):
-				if (parent1[parent1Curr] not in child1):
+				if (parent1[parent1Curr] not in child1Cities):
 					child1[i] = parent1[parent1Curr]
+					child1Cities.add(parent1[parent1Curr])
 
 				parent1Curr += 1
 
 		if (child2[i] == -1):
 			while (child2[i] == -1 and parent2Curr < b):
-				if (parent2[parent2Curr] not in child2):
+				if (parent2[parent2Curr] not in child2Cities):
 					child2[i] = parent2[parent2Curr]
+					child2Cities.add(parent2[parent2Curr])
 
 				parent2Curr += 1
 
