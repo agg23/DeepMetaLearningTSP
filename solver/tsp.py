@@ -3,6 +3,13 @@ import numpy
 class TSP(object):
 	def __init__(self, size):
 		self.adjacent = numpy.zeros(shape=(size, size))
+		self.name = None
+
+	def getName(self):
+		return self.name
+
+	def setName(self, newName):
+		self.name = newName
 
 	def isAsymmetric(self):
 		raise NotImplementedError()
