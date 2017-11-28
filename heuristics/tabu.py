@@ -97,7 +97,7 @@ def generateCandidates(best, tabuList, tsp, timeLimit):
 	return result
 
 
-def search(tsp, maxIterations, maxTabu, maxCandidates, timeLimit, updateLambda = None):
+def search(tsp, maxNoImprove, maxTabu, maxCandidates, timeLimit, updateLambda = None):
 	start = time.time()
 	t_end = start + timeLimit
 	# construct a random tour
@@ -108,9 +108,11 @@ def search(tsp, maxIterations, maxTabu, maxCandidates, timeLimit, updateLambda =
 
 	totalIterations = 0
 	if updateLambda:
-		updateLambda(0, 0, 1, 1, start, maxIterations)
+		updateLambda(0, 0, 1, 1, start, maxNoImprove)
 
-	while maxIterations > 0 and time.time() < t_end:
+	iterNoImprove = 0
+
+	while iterNoImprove < maxNoImprove and time.time() < t_end:
 		# Generates queries using the local search 2-opt algorithm
 		# stochastically, near the best candidate of this iteration.
 		# Uses the tabu list not to visit vertices more than once
@@ -122,24 +124,26 @@ def search(tsp, maxIterations, maxTabu, maxCandidates, timeLimit, updateLambda =
 
 			totalIterations += 1
 
-			updateLambda(totalIterations, best["cost"], 1, 1, start, maxIterations)
+			updateLambda(totalIterations, best["cost"], 1, 1, start, maxNoImprove)
 
 		# Find the best candidate
 		# sorts the list of candidates by cost
 		bestCandidate, bestCandidateEdges = locateBestCandidate(candidates)
 		# compares with the best candidate and updates it if necessary
 		if bestCandidate["cost"] < best["cost"]:
+			iterNoImprove = 0
 			# defines the current candidate as the best
 			best = bestCandidate
 			# Update the taboo list
 			for edge in bestCandidateEdges:
 				if len(tabuList) < maxTabu:
 					tabuList.add(edge)
-		maxIterations -= 1
+		else:
+			iterNoImprove += 1
 
 		totalIterations += 1
 
 		if updateLambda:
-			updateLambda(totalIterations, best["cost"], 1, 1, start, maxIterations)
+			updateLambda(totalIterations, best["cost"], 1, 1, start, maxNoImprove)
 
 	return best["permutation"]

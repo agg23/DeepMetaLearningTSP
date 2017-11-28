@@ -33,13 +33,13 @@ def printUpdate(firstTitle, firstValue, energy, accept, improve, startTime, tota
 			   time_string(elapsed), time_string(remain)), file=sys.stderr, end="\r")
 		sys.stderr.flush()
 
-def solveTabu(tsp, maxCandidates, maxTabu, maxIterations, timeLimit, printUpdates=True):
+def solveTabu(tsp, maxCandidates, maxTabu, maxNoImprovements, timeLimit, printUpdates=True):
 	updateLambda = lambda firstValue, energy, accept, improve, startTime, totalIterations: None
 
 	if printUpdates:
 		updateLambda = lambda firstValue, energy, accept, improve, startTime, totalIterations: printUpdate("   Iteration", firstValue, energy, accept, improve, startTime, totalIterations)
 
-	return tabu.search(tsp, maxIterations, maxTabu, maxCandidates, timeLimit, updateLambda)
+	return tabu.search(tsp, maxNoImprovements, maxTabu, maxCandidates, timeLimit, updateLambda)
 
 def solveSimAnneal(tsp, startTemp, endTemp, iterations, printUpdateFreq = 100):
 	sim = SimulatedAnnealing(tsp)
