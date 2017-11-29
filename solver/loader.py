@@ -11,11 +11,12 @@ def loadTSPLib(path):
 		instanceType = None
 		dimension = 0
 
-		enteredPoints = False
+		pointsLine = -1
+		pointFormat = None
 		points = []
 
 		for line in file:
-			if not enteredPoints:
+			if pointsLine == -1:
 				split = line.split(":")
 				attribute = split[0].strip().lower()
 				value = None
@@ -30,32 +31,48 @@ def loadTSPLib(path):
 				elif attribute == "dimension":
 					dimension = int(value)
 				elif attribute == "node_coord_section":
-					enteredPoints = True
+					pointFormat = "node_coord_section"
+					pointsLine = 0
+				elif attribute == "edge_weight_format":
+					pointFormat = value
+				elif attribute == "edge_weight_section":
+					pointsLine = 0
 			else:
 				line = line.strip()
 				
 				if line == "EOF":
 					break
 
+				line = " ".join(line.split())
 				split = line.split(" ")
+				print(split)
 
-				if len(split) != 3:
-					print("Malformed input")
-					return None
+				if pointFormat == "node_coord_section":
+					if len(split) != 3:
+						print("Malformed input")
+						return None
 
-				points.append((float(split[1]), float(split[2])))
+					points.append((float(split[1]), float(split[2])))
+				elif pointFormat == "full_matrix":
+					if len(split) != dimension:
+						print("Malformed input")
+						return None
 
-		if dimension < 1 or dimension != len(points):
-			print("Invalid dimensions")
-			return None
+					for (i, value) in enumerate(split):
+						points.append((i, pointsLine, float(value)))
+
+				pointsLine += 1
 
 		if instanceType == "tsp":
+			if dimension < 1 or dimension != len(points):
+				print("Invalid dimensions")
+				return None
 			tsp = SymmetricTSP(dimension)
 
-			for i in range(0, dimension):
+			for i in range(dimension):
 				p1 = points[i]
 
-				for j in range(0, dimension):
+				for j in range(dimension):
 					if i < j:
 						p2 = points[j]
 						cost = euclidianDistance2D(p1[0], p1[1], p2[0], p2[1])
@@ -68,7 +85,21 @@ def loadTSPLib(path):
 
 			return tsp
 		elif instanceType == "atsp":
-			print("FINISH")
+			tsp = AsymmetricTSP(dimension)
+
+			for point in points:
+				i = point[0]
+				j = point[1]
+				cost = point[2]
+
+				tsp.setCost(i, j, cost)
+
+			# Add diagonal
+			for i in range(dimension):
+				tsp.setAdjacent(i, i, False)
+
+			return tsp
+
 		else:
 			print("Invalid instance type")
 			return None
