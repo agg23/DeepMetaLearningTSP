@@ -43,9 +43,8 @@ def loadTSPLib(path):
 				if line == "EOF":
 					break
 
-				line = " ".join(line.split())
+				line = " ".join(line.split()).replace("\n", "")
 				split = line.split(" ")
-				print(split)
 
 				if pointFormat == "node_coord_section":
 					if len(split) != 3:
@@ -55,6 +54,8 @@ def loadTSPLib(path):
 					points.append((float(split[1]), float(split[2])))
 				elif pointFormat == "full_matrix":
 					for value in split:
+						if value == "":
+							continue
 						points.append(float(value))
 
 				pointsLine += 1
@@ -107,7 +108,6 @@ def loadTSPLib(path):
 		else:
 			print("Invalid instance type")
 			return None
-
 
 	except FileNotFoundError:
 		print("File not found")
