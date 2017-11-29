@@ -54,12 +54,8 @@ def loadTSPLib(path):
 
 					points.append((float(split[1]), float(split[2])))
 				elif pointFormat == "full_matrix":
-					if len(split) != dimension:
-						print("Malformed input")
-						return None
-
-					for (i, value) in enumerate(split):
-						points.append((i, pointsLine, float(value)))
+					for value in split:
+						points.append(float(value))
 
 				pointsLine += 1
 
@@ -87,15 +83,23 @@ def loadTSPLib(path):
 		elif instanceType == "atsp":
 			tsp = AsymmetricTSP(dimension)
 
-			for point in points:
-				i = point[0]
-				j = point[1]
-				cost = point[2]
+			if dimension < 1:
+				print("Invalid dimensions")
+				return None
 
-				tsp.setCost(i, j, cost)
+			if len(points) != dimension * dimension:
+				print("Malformed input2")
+				return None
+
+			for (i, point) in enumerate(points):
+				x = i % dimension
+				y = i // dimension
+
+				tsp.setCost(x, y, point)
 
 			# Add diagonal
 			for i in range(dimension):
+				tsp.setCost(i, i, 0)
 				tsp.setAdjacent(i, i, False)
 
 			return tsp
