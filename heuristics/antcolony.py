@@ -6,10 +6,11 @@ import random
 import sys
 
 class AntColony:
-	def __init__(self, graph, num_ants, num_iterations, updateLambda = None):
+	def __init__(self, graph, num_ants, num_iterations, timeLimit, updateLambda = None):
 		self.graph = graph
 		self.num_ants = num_ants
 		self.num_iterations = num_iterations
+		self.timeLimit = timeLimit
 		self.Alpha = 0.1
 
 		# condition var
@@ -28,12 +29,13 @@ class AntColony:
 	def start(self):
 		self.reset()
 		self.startTime = time.time()
+		endTime = self.startTime + self.timeLimit
 		self.iter_counter = 0
 
 		if self.updateLambda:
 			self.updateLambda(0, self.best_path_cost, 1, 1, self.startTime)
 
-		while self.iter_counter < self.num_iterations:
+		while self.iter_counter < self.num_iterations and time.time() < endTime:
 			# print("iteration %d" % (self.iter_counter))
 			self.cv.acquire()
 

@@ -77,7 +77,7 @@ def solveGenetic(tsp, generations, printUpdates=True):
 
 	return genetic.entirePopulation[genetic.minIndex]
 
-def solveAntColony(tsp, antCount, iterations, repetitions, printUpdates=True):
+def solveAntColony(tsp, antCount, iterations, repetitions, timeLimit, printUpdates=True):
 	try:
 		graph = AntGraph(tsp)
 		bestPath = None
@@ -88,7 +88,7 @@ def solveAntColony(tsp, antCount, iterations, repetitions, printUpdates=True):
 
 			if printUpdates:
 				updateLambda = lambda firstValue, energy, accept, improve, startTime: printUpdate("   Iteration", firstValue + i * iterations, energy, accept, improve, startTime, iterations * repetitions)
-			colony = AntColony(graph, antCount, iterations, updateLambda)
+			colony = AntColony(graph, antCount, iterations, timeLimit, updateLambda)
 			colony.start()
 			if colony.best_path_cost < bestCost:
 				bestPath = colony.best_path_vec
