@@ -39,6 +39,10 @@ def loadTSPLib(path):
 					pointsLine = 0
 			else:
 				line = line.strip()
+
+				if line == "DISPLAY_DATA_SECTION":
+					# All weights have been loaded
+					break
 				
 				if line == "EOF":
 					break
@@ -57,25 +61,54 @@ def loadTSPLib(path):
 						if value == "":
 							continue
 						points.append(float(value))
+				elif pointFormat == "upper_row":
+					for (i, value) in enumerate(split):
+						if value == "":
+							continue
+
+						i += pointsLine
+
+						if i >= pointsLine:
+							# Skip diagonal
+							i += 1
+
+						points.append((i, pointsLine, float(value)))
+						print((i, pointsLine, float(value)))
 
 				pointsLine += 1
 
 		if instanceType == "tsp":
-			if dimension < 1 or dimension != len(points):
+			if dimension < 1:
 				print("Invalid dimensions")
 				return None
+
 			tsp = SymmetricTSP(dimension)
 
+			if pointFormat == "node_coord_section":
+				if dimension != len(points):
+					print("Invalid dimensions")
+					return None
+
+				for i in range(dimension):
+					p1 = points[i]
+
+					for j in range(dimension):
+						if i < j:
+							p2 = points[j]
+							cost = euclidianDistance2D(p1[0], p1[1], p2[0], p2[1])
+							tsp.setCost(i, j, cost)
+							tsp.setCost(j, i, cost)
+
+			elif pointFormat == "upper_row":
+				for point in points:
+					x = point[0]
+					y = point[1]
+					value = point[2]
+
+					tsp.setCost(x, y, value)
+					tsp.setCost(y, x, value)
+
 			for i in range(dimension):
-				p1 = points[i]
-
-				for j in range(dimension):
-					if i < j:
-						p2 = points[j]
-						cost = euclidianDistance2D(p1[0], p1[1], p2[0], p2[1])
-						tsp.setCost(i, j, cost)
-						tsp.setCost(j, i, cost)
-
 				# Add diagonal
 				tsp.setCost(i, i, 0)
 				tsp.setAdjacent(i, i, False)
