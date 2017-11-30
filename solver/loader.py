@@ -108,6 +108,9 @@ def loadTSPLib(path):
 
 					tsp.setCost(x, y, value)
 					tsp.setCost(y, x, value)
+			else:
+				print("Unknown format")
+				return None
 
 			for i in range(dimension):
 				# Add diagonal
@@ -115,6 +118,7 @@ def loadTSPLib(path):
 				tsp.setAdjacent(i, i, False)
 
 			return tsp
+		
 		elif instanceType == "atsp":
 			tsp = AsymmetricTSP(dimension)
 
@@ -122,15 +126,19 @@ def loadTSPLib(path):
 				print("Invalid dimensions")
 				return None
 
-			if len(points) != dimension * dimension:
-				print("Malformed input2")
+			if pointFormat == "full_matrix":
+				if len(points) != dimension * dimension:
+					print("Malformed input2")
+					return None
+
+				for (i, point) in enumerate(points):
+					x = i % dimension
+					y = i // dimension
+
+					tsp.setCost(x, y, point)
+			else:
+				print("Unknown format")
 				return None
-
-			for (i, point) in enumerate(points):
-				x = i % dimension
-				y = i // dimension
-
-				tsp.setCost(x, y, point)
 
 			# Add diagonal
 			for i in range(dimension):
