@@ -15,6 +15,8 @@ def loadTSPLib(path):
 		pointFormat = None
 		points = []
 
+		pointsX = 0
+
 		for line in file:
 			if pointsLine == -1:
 				split = line.split(":")
@@ -62,20 +64,19 @@ def loadTSPLib(path):
 							continue
 						points.append(float(value))
 				elif pointFormat == "upper_row":
-					for (i, value) in enumerate(split):
+					for value in split:
 						if value == "":
 							continue
 
-						i += pointsLine
-
-						if i >= pointsLine:
+						if pointsX >= pointsLine:
 							# Skip diagonal
-							i += 1
+							pointsX += 1
 
-						points.append((i, pointsLine, float(value)))
-						print((i, pointsLine, float(value)))
+						if pointsX > dimension - 1:
+							pointsLine += 1
+							pointsX = pointsLine + 1
 
-				pointsLine += 1
+						points.append((pointsX, pointsLine, float(value)))
 
 		if instanceType == "tsp":
 			if dimension < 1:
