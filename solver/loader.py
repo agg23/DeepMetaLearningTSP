@@ -93,6 +93,20 @@ def loadTSPLib(path):
 
 						pointsX += 1
 
+				elif pointFormat == "lower_row":
+					for value in split:
+						if value == "":
+							continue
+
+						if pointsX >= dimension - 1 - (dimension - 1 - pointsLine) + formatIncludesDiag:
+							# Row of matrix has ended
+							pointsLine += 1
+							pointsX = 0
+
+						points.append((pointsX, pointsLine, float(value)))
+
+						pointsX += 1
+
 		if dimension < 1:
 			print("Invalid dimensions")
 			return None
@@ -115,7 +129,7 @@ def loadTSPLib(path):
 							tsp.setCost(i, j, cost)
 							tsp.setCost(j, i, cost)
 
-			elif pointFormat == "upper_row":
+			elif pointFormat == "upper_row" or pointFormat == "lower_row":
 				for point in points:
 					x = point[0]
 					y = point[1]
