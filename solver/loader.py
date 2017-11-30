@@ -93,11 +93,11 @@ def loadTSPLib(path):
 
 						pointsX += 1
 
-		if instanceType == "tsp":
-			if dimension < 1:
-				print("Invalid dimensions")
-				return None
+		if dimension < 1:
+			print("Invalid dimensions")
+			return None
 
+		if instanceType == "tsp":
 			tsp = SymmetricTSP(dimension)
 
 			if pointFormat == "node_coord_section":
@@ -123,6 +123,9 @@ def loadTSPLib(path):
 
 					tsp.setCost(x, y, value)
 					tsp.setCost(y, x, value)
+
+			elif pointFormat == "full_matrix":
+				fullMatrix(tsp, points, dimension)
 			else:
 				print("Unknown format")
 				return None
@@ -137,20 +140,8 @@ def loadTSPLib(path):
 		elif instanceType == "atsp":
 			tsp = AsymmetricTSP(dimension)
 
-			if dimension < 1:
-				print("Invalid dimensions")
-				return None
-
 			if pointFormat == "full_matrix":
-				if len(points) != dimension * dimension:
-					print("Malformed input")
-					return None
-
-				for (i, point) in enumerate(points):
-					x = i % dimension
-					y = i // dimension
-
-					tsp.setCost(x, y, point)
+				fullMatrix(tsp, points, dimension)
 			else:
 				print("Unknown format")
 				return None
@@ -169,6 +160,17 @@ def loadTSPLib(path):
 	except FileNotFoundError:
 		print("File not found")
 		return None
+
+def fullMatrix(tsp, points, dimension):
+	if len(points) != dimension * dimension:
+		print("Malformed input")
+		return None
+
+	for (i, point) in enumerate(points):
+		x = i % dimension
+		y = i // dimension
+
+		tsp.setCost(x, y, point)
 
 def loadTSPLibTour(path, tsp):
 	try:
