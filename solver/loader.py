@@ -13,6 +13,7 @@ def loadTSPLib(path):
 
 		pointsLine = -1
 		pointFormat = None
+		formatIncludesDiag = False
 		points = []
 
 		pointsX = 0
@@ -37,6 +38,18 @@ def loadTSPLib(path):
 					pointsLine = 0
 				elif attribute == "edge_weight_format":
 					pointFormat = value
+
+					if pointFormat == "upper_diag_row":
+						pointFormat = "upper_row"
+						formatIncludesDiag = True
+					elif pointFormat == "lower_diag_row":
+						pointFormat = "lower_row"
+						formatIncludesDiag = True
+
+					if not formatIncludesDiag:
+						# Start at first valid entry, not on diagonal
+						pointsX = 1
+
 				elif attribute == "edge_weight_section":
 					pointsLine = 0
 			else:
@@ -68,15 +81,17 @@ def loadTSPLib(path):
 						if value == "":
 							continue
 
-						if pointsX >= pointsLine:
-							# Skip diagonal
-							pointsX += 1
-
 						if pointsX > dimension - 1:
+							# Row of matrix has ended
 							pointsLine += 1
-							pointsX = pointsLine + 1
+							pointsX = pointsLine
+							if not formatIncludesDiag:
+								# Skip the diagonal
+								pointsX += 1
 
 						points.append((pointsX, pointsLine, float(value)))
+
+						pointsX += 1
 
 		if instanceType == "tsp":
 			if dimension < 1:
@@ -118,7 +133,7 @@ def loadTSPLib(path):
 				tsp.setAdjacent(i, i, False)
 
 			return tsp
-		
+
 		elif instanceType == "atsp":
 			tsp = AsymmetricTSP(dimension)
 
@@ -128,7 +143,7 @@ def loadTSPLib(path):
 
 			if pointFormat == "full_matrix":
 				if len(points) != dimension * dimension:
-					print("Malformed input2")
+					print("Malformed input")
 					return None
 
 				for (i, point) in enumerate(points):
