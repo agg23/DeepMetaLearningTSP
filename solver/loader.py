@@ -119,8 +119,10 @@ def loadTSPLib(path):
 
 			if pointFormat == "node_coord_section":
 				costFunction = None
-				if edgeWeightType == "att":
+				if edgeWeightType == "euc_2d":
 					costFunction = euclidianDistance2D
+				elif edgeWeightType == "att":
+					costFunction = attDistance
 				elif edgeWeightType == "geo":
 					costFunction = geoDistance
 				else:
@@ -234,15 +236,17 @@ def loadTSPLibTour(path, tsp):
 				if line == "EOF" or line == "-1":
 					break
 
-				index = -1
-				try:
-					index = int(line)
-				except:
-					print("Malformed input")
-					return None
+				split = line.split()
 
-				# Subtract 1, since indicies are 1 indexed in TSPLib
-				points.append(index - 1)
+				for value in split:
+					try:
+						index = int(value)
+
+						# Subtract 1, since indicies are 1 indexed in TSPLib
+						points.append(index - 1)
+					except:
+						print("Malformed input")
+						return None
 
 		if dimension < 1 or dimension != len(points):
 			print("Invalid dimensions")
@@ -295,3 +299,15 @@ def geoDistance(lat1, long1, lat2, long2):
 	q3 = math.cos(lat1Radians + lat2Radians)
 
 	return earthRadius * math.acos(0.5 * ((1 + q1) * q2 - (1 - q1) * q3)) + 1
+
+def attDistance(x1, y1, x2, y2):
+	deltaX = x1 - x2
+	deltaY = y1 - y2
+
+	r = math.sqrt((deltaX * deltaX + deltaY * deltaY) / 10)
+	t = int(r)
+
+	if t < r:
+		return t + 1
+	else:
+		return t
