@@ -13,6 +13,7 @@ def loadTSPLib(path):
 
 		pointsLine = -1
 		pointFormat = None
+		edgeWeightType = None
 		formatIncludesDiag = False
 		points = []
 
@@ -52,6 +53,8 @@ def loadTSPLib(path):
 
 				elif attribute == "edge_weight_section":
 					pointsLine = 0
+				elif attribute == "edge_weight_type":
+					edgeWeightType = value
 			else:
 				line = line.strip()
 
@@ -115,6 +118,17 @@ def loadTSPLib(path):
 			tsp = SymmetricTSP(dimension)
 
 			if pointFormat == "node_coord_section":
+				costFunction = None
+				if edgeWeightType == "att":
+					costFunction = euclidianDistance2D
+				elif edgeWeightType == "geo":
+					costFunction = geoDistance
+				else:
+					print(edgeWeightType)
+					print("Unknown node_coord_format")
+					return None
+
+
 				if dimension != len(points):
 					print("Invalid dimensions")
 					return None
@@ -125,7 +139,7 @@ def loadTSPLib(path):
 					for j in range(dimension):
 						if i < j:
 							p2 = points[j]
-							cost = euclidianDistance2D(p1[0], p1[1], p2[0], p2[1])
+							cost = costFunction(p1[0], p1[1], p2[0], p2[1])
 							tsp.setCost(i, j, cost)
 							tsp.setCost(j, i, cost)
 
@@ -258,3 +272,26 @@ def euclidianDistance3D(x1, y1, z1, x2, y2, z2):
 	deltaZ = z1 - z2
 
 	return math.sqrt(deltaX*deltaX + deltaY*deltaY + deltaZ*deltaZ)
+
+def geoToRadians(lat, lon):
+	latDegree = int(lat)
+	latMinutes = lat - latDegree
+	latRadians = math.pi * (latDegree + 5 * latMinutes / 3) / 180
+
+	longDegree = int(lon)
+	longMinutes = lon - longDegree
+	longRadians = math.pi * (longDegree + 5 * longMinutes / 3) / 180
+
+	return (latRadians, longRadians)
+
+def geoDistance(lat1, long1, lat2, long2):
+	lat1Radians, long1Radians = geoToRadians(lat1, long1)
+	lat2Radians, long2Radians = geoToRadians(lat2, long2)
+
+	earthRadius = 6378.388
+
+	q1 = math.cos(long1Radians - long2Radians)
+	q2 = math.cos(lat1Radians - lat2Radians)
+	q3 = math.cos(lat1Radians + lat2Radians)
+
+	return earthRadius * math.acos(0.5 * ((1 + q1) * q2 - (1 - q1) * q3)) + 1
