@@ -18,8 +18,9 @@ def min_spanning_tree(graph):
 	# the graph has no edges, so each vertex is in it's own component
 	min_vertex_in_component = {v:v for v in vertex_set}
 	tree = {}
+	index = 0
 	while len(tree)<len(vertex_set)-1:
-		edge, weight = edge_set[0]
+		edge, weight = edge_set[index]
 		x,y = edge
 		if min_vertex_in_component[x] != min_vertex_in_component[y]:
 			tree[edge] = weight
@@ -28,7 +29,7 @@ def min_spanning_tree(graph):
 			for v in vertex_set:
 				if min_vertex_in_component[v] == old_min:
 					min_vertex_in_component[v] = new_min
-		edge_set = edge_set[1:]
+		index += 1
 
 	return tree
 
@@ -117,7 +118,7 @@ def tspToDict(tsp):
 
 	return graph
 
-def findLowerBound(tsp, alpha=1.0, beta=.95, times=100):
+def findLowerBound(tsp, alpha=1.0, beta=.95, times=100, maxTimes=100):
 
 	"""
 	This function uses the held-karp 1-tree method to find a lower
@@ -134,7 +135,8 @@ def findLowerBound(tsp, alpha=1.0, beta=.95, times=100):
 	iterations_without_increase = 0
 	prev_max = 0
 	#iterate
-	while iterations_without_increase  < times:
+	iterations = 0
+	while iterations_without_increase < times and iterations < maxTimes:
 
 		# meat of held-karp: 
 		# find the minimum spanning 1-tree and update edge weights
@@ -154,6 +156,8 @@ def findLowerBound(tsp, alpha=1.0, beta=.95, times=100):
 		else:
 			alpha *= beta
 			iterations_without_increase += 1
+
+		iterations += 1
 
 	# get the weight in terms of the original graph
 	return weight
