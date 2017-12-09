@@ -65,9 +65,11 @@ def clusteringCoefficientTransitivity(tsp):
 
 	for i in range(n):
 		for j in range(i + 1, n):
+			ij = tsp.getAdjacent(i, j)
+			ji = tsp.getAdjacent(j, i)
 			for k in range(j + 1, n):
-				numberTriangles += tsp.getAdjacent(i, j) * tsp.getAdjacent(i, k) * tsp.getAdjacent(j, k)
-				numberTriples += tsp.getAdjacent(i, j) * tsp.getAdjacent(i, k) + tsp.getAdjacent(j, i) * tsp.getAdjacent(j, k) + tsp.getAdjacent(k, i) * tsp.getAdjacent(k, j)
+				numberTriangles += int(ij and tsp.getAdjacent(i, k) and tsp.getAdjacent(j, k))
+				numberTriples += int(ij and tsp.getAdjacent(i, k)) + int(ji and tsp.getAdjacent(j, k)) + int(tsp.getAdjacent(k, i) and tsp.getAdjacent(k, j))
 
 	return 3 * numberTriangles / numberTriples
 
@@ -164,7 +166,7 @@ def edgeDegreeCorrelation(tsp, connectedEdgeCounts):
 			# Optimization: Process all loops at once
 			mi = connectedEdgeCounts[i]
 			mj = connectedEdgeCounts[j]
-			adjacent = tsp.getAdjacent(i, j)
+			adjacent = int(tsp.getAdjacent(i, j))
 
 			firstNumerator += mi * mj * adjacent
 			secondNumerator += (mi + mj) * adjacent
@@ -219,8 +221,8 @@ def adjacencyCorrelationCoefficient(tsp):
 
 	for i in range(n):
 		for j in range(n):
-			numeratorSum += (tsp.getAdjacent(i, j) - aBar) * (tsp.getAdjacent(j, i) - aBar)
-			denominatorSum += pow((tsp.getAdjacent(i, j) - aBar), 2)
+			numeratorSum += (int(tsp.getAdjacent(i, j)) - aBar) * (int(tsp.getAdjacent(j, i)) - aBar)
+			denominatorSum += pow((int(tsp.getAdjacent(i, j)) - aBar), 2)
 
 	# Instead of returning infinity for dividing by 0, return -1
 	if denominatorSum == 0:
