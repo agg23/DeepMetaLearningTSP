@@ -118,34 +118,40 @@ def networkCyclicCoefficient(tsp, connectedEdgeCounts):
 	sum = 0
 	n = tsp.getSize()
 
-	for i in range(n):
-		innerSum = 0
-		for j in range(n):
-			if j == i:
-				continue
-
-			visited = None
-			paths = None
-			for k in range(n):
-				if k == i or k == j:
+	if not tsp.isAsymmetric():
+		# Cycles are all length 3. Short circuit
+		innerSum = n * n / 3
+		for i in range(n):
+			sum += 2 * innerSum / (connectedEdgeCounts[i] * (connectedEdgeCounts[i] - 1))
+	else:
+		for i in range(n):
+			innerSum = 0
+			for j in range(n):
+				if j == i:
 					continue
-				# Optimization: Only run dijkstra's if both verticies are connected to i
-				if tsp.getAdjacent(i, j) and tsp.getAdjacent(i, k):
-					length = 0
-					if tsp.getAdjacent(j, k):
-						# Optimization: Short circuit if shortest path is a simple triangle
-						length = 2
-					else:
-						# Optimiaztion: Lazy load dijkstra's for each j
-						if visited == None:
-							visited, paths = dijkstraConnectedPath(tsp, j)
 
-						length, _ = dijkstraShortestPathWithData(visited, paths, j, k)
+				visited = None
+				paths = None
+				for k in range(n):
+					if k == i or k == j:
+						continue
+					# Optimization: Only run dijkstra's if both verticies are connected to i
+					if tsp.getAdjacent(i, j) and tsp.getAdjacent(i, k):
+						length = 0
+						if tsp.getAdjacent(j, k):
+							# Optimization: Short circuit if shortest path is a simple triangle
+							length = 2
+						else:
+							# Optimiaztion: Lazy load dijkstra's for each j
+							if visited == None:
+								visited, paths = dijkstraConnectedPath(tsp, j)
 
-					# Add 1 to path length (as we need to include the edge from either i to j or i to k)
-					innerSum += 1 / (length + 1)
+							length, _ = dijkstraShortestPathWithData(visited, paths, j, k)
 
-		sum += 2 * innerSum / (connectedEdgeCounts[i] * (connectedEdgeCounts[i] - 1))
+						# Add 1 to path length (as we need to include the edge from either i to j or i to k)
+						innerSum += 1 / (length + 1)
+
+			sum += 2 * innerSum / (connectedEdgeCounts[i] * (connectedEdgeCounts[i] - 1))
 
 	return sum / n
 
