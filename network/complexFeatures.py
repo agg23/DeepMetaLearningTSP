@@ -65,11 +65,11 @@ def clusteringCoefficientTransitivity(tsp):
 
 	for i in range(n):
 		for j in range(i + 1, n):
-			ij = tsp.getAdjacent(i, j)
-			ji = tsp.getAdjacent(j, i)
+			ij = tsp.adjacent[i, j]
+			ji = tsp.adjacent[i, j]
 			for k in range(j + 1, n):
-				numberTriangles += int(ij and tsp.getAdjacent(i, k) and tsp.getAdjacent(j, k))
-				numberTriples += int(ij and tsp.getAdjacent(i, k)) + int(ji and tsp.getAdjacent(j, k)) + int(tsp.getAdjacent(k, i) and tsp.getAdjacent(k, j))
+				numberTriangles += int(ij and tsp.adjacent[i, k] and tsp.adjacent[j, k])
+				numberTriples += int(ij and tsp.adjacent[i, k]) + int(ji and tsp.adjacent[j, k]) + int(tsp.adjacent[k, i] and tsp.adjacent[k, j])
 
 	return 3 * numberTriangles / numberTriples
 
@@ -81,11 +81,11 @@ def alternateClusteringCoefficient(tsp):
 
 	for i in range(n):
 		for j in range(n):
-			ij = tsp.getAdjacent(i, j)
-			ji = tsp.getAdjacent(j, i)
+			ij = tsp.adjacent[i, j]
+			ji = tsp.adjacent[i, j]
 			for k in range(j + 1, n):
-				numberTriangles = int(ij and tsp.getAdjacent(i, k) and tsp.getAdjacent(j, k))
-				numberTriples = int(ij and tsp.getAdjacent(i, k)) + int(ji and tsp.getAdjacent(j, k)) + int(tsp.getAdjacent(k, i) and tsp.getAdjacent(k, j))
+				numberTriangles = int(ij and tsp.adjacent[i, k] and tsp.adjacent[j, k])
+				numberTriples = int(ij and tsp.adjacent[i, k]) + int(ji and tsp.adjacent[j, k]) + int(tsp.adjacent[k, i] and tsp.adjacent[k, j])
 
 				sum += numberTriangles / numberTriples
 
@@ -107,7 +107,7 @@ def weightedClusteringCoefficient(tsp, connectedEdgeCounts):
 		innerSum = 0
 		for j in range(n):
 			for k in range(j + 1, n):
-				innerSum += (int(tsp.getCost(i, j)) + int(tsp.getCost(i, k))) / 2 * int(tsp.getAdjacent(i, j) and tsp.getAdjacent(i, k) and tsp.getAdjacent(j, k))
+				innerSum += (int(tsp.costs[i, j]) + int(tsp.costs[i, k])) / 2 * int(tsp.adjacent[i, j] and tsp.adjacent[i, k] and tsp.adjacent[j, k])
 
 		sum += innerSum / (vertexCosts * (connectedEdgeCounts[i] - 1))
 

@@ -2,7 +2,7 @@ import numpy
 
 class TSP(object):
 	def __init__(self, size):
-		self.adjacent = numpy.zeros(shape=(size, size))
+		self.adjacent = numpy.zeros(shape=(size, size), dtype=bool)
 		self.name = None
 
 	def getName(self):
@@ -21,14 +21,10 @@ class TSP(object):
 		raise NotImplementedError()
 
 	def getAdjacent(self, cityA, cityB):
-		return self.adjacent[cityA][cityB] == 1
+		return self.adjacent[cityA][cityB]
 
 	def setAdjacent(self, cityA, cityB, adjacent):
-		value = 0
-		if adjacent:
-			value = 1
-
-		self.adjacent[cityA][cityB] = value
+		self.adjacent[cityA][cityB] = adjacent
 
 	def getSize(self):
 		raise NotImplementedError()
