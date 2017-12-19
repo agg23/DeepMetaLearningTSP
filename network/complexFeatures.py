@@ -80,14 +80,17 @@ def alternateClusteringCoefficient(tsp):
 	n = tsp.getSize()
 
 	for i in range(n):
+		numberTriangles = 0
+		numberTriples = 0
+		
 		for j in range(n):
 			ij = tsp.adjacent[i, j]
 			ji = tsp.adjacent[i, j]
 			for k in range(j + 1, n):
-				numberTriangles = int(ij and tsp.adjacent[i, k] and tsp.adjacent[j, k])
-				numberTriples = int(ij and tsp.adjacent[i, k]) + int(ji and tsp.adjacent[j, k]) + int(tsp.adjacent[k, i] and tsp.adjacent[k, j])
+				numberTriangles += int(ij and tsp.adjacent[i, k] and tsp.adjacent[j, k])
+				numberTriples += int(ij and tsp.adjacent[i, k]) + int(ji and tsp.adjacent[j, k]) + int(tsp.adjacent[k, i] and tsp.adjacent[k, j])
 
-				sum += numberTriangles / numberTriples
+		sum += numberTriangles / numberTriples
 
 	return sum / n
 
