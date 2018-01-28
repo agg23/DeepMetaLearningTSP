@@ -21,7 +21,7 @@ class Genetic(object):
 		self.minDistance = None
 		self.minIndex = None
 
-		self.crossoverGroup = numpy.empty((self.groupSize, self.tsp.getSize()))
+		self.crossoverGroup = numpy.empty((self.groupSize, self.tsp.getSize()), dtype = int)
 		self.crossoverIndices = numpy.empty(self.groupSize, dtype = int)
 
 		self.crossoverGroupTourLengths = numpy.empty(self.groupSize)
@@ -130,11 +130,11 @@ class Genetic(object):
 def crossover(tsp, parent1, parent2):
 	# create two crossover points
 	tourLength = tsp.getSize()
-	a = random.randint(0, tourLength - 1)
-	b = random.randint(a, tourLength)
+	a = numpy.random.randint(0, tourLength - 1)
+	b = numpy.random.randint(a, tourLength)
 	# create two empty lists for the children
-	child1 = numpy.full(tourLength, -1, dtype=numpy.int)
-	child2 = numpy.full(tourLength, -1, dtype=numpy.int)
+	child1 = numpy.full(tourLength, -1, dtype=int)
+	child2 = numpy.full(tourLength, -1, dtype=int)
 
 	child1Cities = set()
 	child2Cities = set()
