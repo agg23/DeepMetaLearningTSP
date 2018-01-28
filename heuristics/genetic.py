@@ -9,17 +9,27 @@ import sys
 
 class Genetic(object):
 
-	def __init__(self, tsp):
+	def __init__(self, tsp, mutationRate, populationSize):
 		self.tsp = tsp
-		self.mutationRate = 10
-		self.populationSize = 800 #s/b 100,000
+		# Defaults to 10
+		self.mutationRate = mutationRate
+		# Defaults to 800
+		self.populationSize = populationSize #s/b 100,000
 		self.groupSize = 10 #must be >= 5
-		self.entirePopulation = []
+		self.entirePopulation = numpy.empty((self.populationSize, self.tsp.getSize()), dtype = int)
+		self.entirePopulationLengths = numpy.empty(self.populationSize)
 		self.minDistance = None
 		self.minIndex = None
 
+		self.crossoverGroup = numpy.empty((self.groupSize, self.tsp.getSize()))
+		self.crossoverIndices = numpy.empty(self.groupSize, dtype = int)
+
+		self.crossoverGroupTourLengths = numpy.empty(self.groupSize)
+
 		for i in range(0, self.populationSize):
-			self.entirePopulation.append(generateInitialSolution(tsp))
+			tour = generateInitialSolution(tsp)
+			self.entirePopulation[i] = tour
+			self.entirePopulationLengths[i] = calculateCost(tour, self.tsp)
 
 	# def printPopulation(self):
 	#     for i in range(0, len(self.entirePopulation)):
@@ -47,21 +57,21 @@ class Genetic(object):
 		return perm
 
 	def nextGeneration(self):
-		crossoverGroup = []
 		for i in range(0, self.groupSize):
-			crossoverTour = []
-			index = random.randint(0, self.populationSize - 1)
-			crossoverTour.append(index)
-			crossoverTour.append(self.entirePopulation[index])
-			crossoverGroup.append(crossoverTour)
+			index = numpy.random.randint(0, self.populationSize - 1)
 
-		self.sortCrossoverGroup(crossoverGroup)
+			self.crossoverIndices[i] = index
 
-		parentSelect = self.determineParents(crossoverGroup)
-		children = crossover(self.tsp, crossoverGroup[parentSelect[0]][1], crossoverGroup[parentSelect[1]][1])
+			self.crossoverGroupTourLengths[i] = self.entirePopulationLengths[index]
+			self.crossoverGroup[i] = self.entirePopulation[index]
 
-		child1Index = crossoverGroup[self.groupSize - 2][0]
-		child2Index = crossoverGroup[self.groupSize - 1][0]
+		self.sortCrossoverGroup()
+
+		parentSelect = self.determineParents()
+		children = crossover(self.tsp, self.crossoverGroup[parentSelect[0]], self.crossoverGroup[parentSelect[1]])
+
+		child1Index = self.crossoverIndices[self.groupSize - 2]
+		child2Index = self.crossoverIndices[self.groupSize - 1]
 
 		#set the lowest two tours to the crossovered children
 		self.entirePopulation[child1Index] = children[0]
@@ -72,14 +82,20 @@ class Genetic(object):
 		self.entirePopulation[child2Index] = self.mutate(self.entirePopulation[child2Index], self.mutationRate)
 
 		#update the distance of the children
-		self.updateDistance(child1Index)
-		self.updateDistance(child2Index)
+		child1Cost = calculateCost(self.entirePopulation[child1Index], self.tsp)
+		child2Cost = calculateCost(self.entirePopulation[child2Index], self.tsp)
+
+		self.entirePopulationLengths[child1Index] = child1Cost
+		self.entirePopulationLengths[child2Index] = child2Cost
+
+		self.updateDistance(child1Index, child1Cost)
+		self.updateDistance(child2Index, child2Cost)
 
 	#determine parents based on a group size of 5 or more
 	#creates crossover from at least 1 of the two shortest distance tours
 	#attempts to maintain diversity somewhat by ocassionaly incorporating lower-quality parents for crossover,
 	#though at a less frequent level
-	def determineParents(self, crossoverGroup):
+	def determineParents(self):
 		parentRandom = random.randrange(0,100)
 
 		if(parentRandom <= 40):
@@ -97,16 +113,18 @@ class Genetic(object):
 		elif(parentRandom < 100):
 			return 1, self.groupSize - 1
 
-	def updateDistance(self, tourIndex):
-		distance = calculateCost(self.entirePopulation[tourIndex], self.tsp)
-
-		if(self.minDistance == None or self.minDistance > distance):
-			self.minDistance = distance
+	def updateDistance(self, tourIndex, cost):
+		if(self.minDistance == None or self.minDistance > cost):
+			self.minDistance = cost
 			self.minIndex = tourIndex
 
 	#insertion sort crossover group
-	def sortCrossoverGroup(self, crossoverGroup):
-		crossoverGroup.sort(key = lambda group: calculateCost(group[1], self.tsp))
+	def sortCrossoverGroup(self):
+		# print(crossoverGroup)
+		# crossoverGroup.sort(key = lambda group: calculateCost(group[1], self.tsp))
+		sortedTourIndices = numpy.argsort(self.crossoverGroupTourLengths)
+		# print(sortedTourIndices)
+		self.crossoverGroup = self.crossoverGroup[sortedTourIndices]
 
 #Using Partially Mapped Crossover
 def crossover(tsp, parent1, parent2):

@@ -63,12 +63,12 @@ def solveGrasp(tsp, maxNoImprovements, maxIterations, alpha, timeLimit, printUpd
 
 	return grasp.search(tsp, maxIterations, maxNoImprovements, alpha, timeLimit, updateLambda)
 
-def solveGenetic(tsp, generations, timeLimit, printUpdates=True):
+def solveGenetic(tsp, generations, mutationRate, populationSize, timeLimit, printUpdates=True):
 	start = time.time()
 
 	end = start + timeLimit
 
-	genetic = Genetic(tsp)
+	genetic = Genetic(tsp, mutationRate, populationSize)
 
 	for i in range(0, generations):
 		if end < time.time():
