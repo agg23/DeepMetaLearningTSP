@@ -82,25 +82,20 @@ def solveGenetic(tsp, generations, mutationRate, populationSize, timeLimit, prin
 
 	return genetic.entirePopulation[genetic.minIndex]
 
-def solveAntColony(tsp, antCount, iterations, repetitions, alpha, q0, rho, timeLimit, printUpdates=True):
-		beta = 1
-	# try:
-		graph = AntGraph(tsp, beta)
-		bestPath = None
-		bestCost = sys.maxsize
-		for i in range(0, repetitions):
-			graph.reset_tau()
-			updateLambda = lambda firstValue, energy, accept, improve, startTime: None
+def solveAntColony(tsp, antCount, iterations, repetitions, alpha, beta, q0, rho, timeLimit, printUpdates=True):
+	graph = AntGraph(tsp, beta)
+	bestPath = None
+	bestCost = sys.maxsize
+	for i in range(0, repetitions):
+		graph.reset_tau()
+		updateLambda = lambda firstValue, energy, accept, improve, startTime: None
 
-			if printUpdates:
-				updateLambda = lambda firstValue, energy, accept, improve, startTime: printUpdate("   Iteration", firstValue + i * iterations, energy, accept, improve, startTime, iterations * repetitions)
-			colony = AntColony(graph, antCount, iterations, alpha, q0, rho, timeLimit, updateLambda)
-			colony.start()
-			if colony.best_path_cost < bestCost:
-				bestPath = colony.best_path_vec
-				bestCost = colony.best_path_cost
+		if printUpdates:
+			updateLambda = lambda firstValue, energy, accept, improve, startTime: printUpdate("   Iteration", firstValue + i * iterations, energy, accept, improve, startTime, iterations * repetitions)
+		colony = AntColony(graph, antCount, iterations, alpha, q0, rho, timeLimit, updateLambda)
+		colony.start()
+		if colony.best_path_cost < bestCost:
+			bestPath = colony.best_path_vec
+			bestCost = colony.best_path_cost
 
-		return bestPath
-
-	# except Exception as e:
-	# 	print("Ant exception: " + str(e))
+	return bestPath
