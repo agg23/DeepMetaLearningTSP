@@ -4,7 +4,7 @@ import sys
 import numpy
 
 class Ant:
-	def __init__(self, ID, start_node, colony):
+	def __init__(self, ID, start_node, colony, q0, rho):
 		self.ID = ID
 		self.start_node = start_node
 		self.colony = colony
@@ -17,8 +17,8 @@ class Ant:
 
 		# same meaning as in standard equations
 		#self.Q0 = 1  # Q0 = 1 works just fine for 10 city case (no explore)
-		self.Q0 = 0.5
-		self.Rho = 0.99
+		self.q0 = q0
+		self.rho = rho
 
 		# store the nodes remaining to be explored here
 		self.nodes_to_visit = {}
@@ -73,7 +73,7 @@ class Ant:
 
 		mult_mat = numpy.multiply(tau_mat[nodes], etha_pow_mat[nodes])
 
-		if q < self.Q0:
+		if q < self.q0:
 			# print("Exploitation")
 			max_node = nodes[numpy.argmax(mult_mat)]
 
@@ -109,6 +109,6 @@ class Ant:
 	# phermone update rule for indiv ants
 	def local_updating_rule(self, curr_node, next_node):
 		graph = self.colony.graph
-		val = (1 - self.Rho) * graph.tau(curr_node, next_node) + (self.Rho * graph.tau0)
+		val = (1 - self.rho) * graph.tau(curr_node, next_node) + (self.rho * graph.tau0)
 		graph.update_tau(curr_node, next_node, val)
 

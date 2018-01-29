@@ -27,10 +27,6 @@ class AntGraph:
 	def tau(self, r, s):
 		return self.tau_mat[r][s]
 
-	# 1 / delta = eta or etha 
-	def etha(self, r, s):
-		return self.etha_pow_mat[r][s]
-
 	# inner locks most likely not necessary
 	def update_tau(self, r, s, val):
 		self.tau_mat[r][s] = val

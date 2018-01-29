@@ -5,12 +5,14 @@ import random
 import sys
 
 class AntColony:
-	def __init__(self, graph, num_ants, num_iterations, timeLimit, updateLambda = None):
+	def __init__(self, graph, num_ants, num_iterations, alpha, q0, rho, timeLimit, updateLambda = None):
 		self.graph = graph
 		self.num_ants = num_ants
 		self.num_iterations = num_iterations
 		self.timeLimit = timeLimit
-		self.Alpha = 0.1
+		self.alpha = alpha
+		self.q0 = q0
+		self.rho = rho
 
 		# condition var
 		self.updateLambda = updateLambda
@@ -90,7 +92,7 @@ class AntColony:
 	def create_ants(self):
 		ants = []
 		for i in range(0, self.num_ants):
-			ant = Ant(i, random.randint(0, self.graph.num_nodes - 1), self)
+			ant = Ant(i, random.randint(0, self.graph.num_nodes - 1), self, self.q0, self.rho)
 			ants.append(ant)
 		
 		return ants
@@ -104,7 +106,7 @@ class AntColony:
 			for s in range(0, self.graph.num_nodes):
 				if r != s:
 					delt_tau = self.best_path_mat[r][s] / self.best_path_cost
-					evaporation = (1 - self.Alpha) * self.graph.tau(r, s)
-					deposition = self.Alpha * delt_tau
+					evaporation = (1 - self.alpha) * self.graph.tau(r, s)
+					deposition = self.alpha * delt_tau
 
 					self.graph.update_tau(r, s, evaporation + deposition)
