@@ -1,5 +1,4 @@
 from heuristics.ant import Ant
-from threading import Lock, Condition
 
 import time
 import random
@@ -14,8 +13,6 @@ class AntColony:
 		self.Alpha = 0.1
 
 		# condition var
-		self.cv = Condition()
-
 		self.updateLambda = updateLambda
 
 		self.reset()
@@ -37,18 +34,9 @@ class AntColony:
 
 		while self.iter_counter < self.num_iterations and time.time() < endTime:
 			# print("iteration %d" % (self.iter_counter))
-			self.cv.acquire()
-
 			self.iteration()
-			# wait until update calls notify()
-			self.cv.wait()
 
-			lock = self.graph.lock
-			lock.acquire()
 			self.global_updating_rule()
-			lock.release()
-
-			self.cv.release()
 
 			if self.updateLambda:
 				self.updateLambda(self.iter_counter, self.best_path_cost, 1, 1, self.startTime)
@@ -62,7 +50,7 @@ class AntColony:
 		# print("iter_counter = %d\n" % (self.iter_counter,))
 		for ant in self.ants:
 			# print("starting ant = %d\n" % (ant.ID))
-			ant.start()
+			ant.run()
 
 	def num_ants(self):
 		return len(self.ants)
@@ -75,9 +63,6 @@ class AntColony:
 
 	# called by individual ants
 	def update(self, ant):
-		lock = self.graph.lock
-		lock.acquire()
-
 		#outfile = open("results.dat", "a")
 
 		# print("Update called by %d, %d\n" % (ant.ID, self.ant_counter))
@@ -92,15 +77,10 @@ class AntColony:
 			self.best_path_vec = ant.path_vec
 			self.last_best_path_iteration = self.iter_counter
 
-		lock.release()
-
 		if self.ant_counter == len(self.ants):
 			self.avg_path_cost /= len(self.ants)
 			# print("Best: %s, %f, %d, %f\n" % (self.best_path_vec, self.best_path_cost, self.iter_counter, self.avg_path_cost,))
 			#outfile.write("\n%s\t%s\t%s" % (self.iter_counter, self.avg_path_cost, self.best_path_cost,))
-			self.cv.acquire()
-			self.cv.notify()
-			self.cv.release()
 		#outfile.close()
 
 	def done(self):

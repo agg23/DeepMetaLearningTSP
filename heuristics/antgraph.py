@@ -1,11 +1,9 @@
-from threading import Lock
 import numpy
 
 class AntGraph:
 	def __init__(self, tsp):
 		self.tsp = tsp
 		self.num_nodes = tsp.getSize()
-		self.lock = Lock()
 
 		# tau mat contains the amount of phermone at node x,y
 		self.tau_mat = numpy.zeros((self.num_nodes, self.num_nodes))

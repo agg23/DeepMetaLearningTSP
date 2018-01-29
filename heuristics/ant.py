@@ -1,12 +1,10 @@
 import math
 import random
 import sys
-from threading import *
 import numpy
 
-class Ant(Thread):
+class Ant:
 	def __init__(self, ID, start_node, colony):
-		Thread.__init__(self)
 		self.ID = ID
 		self.start_node = start_node
 		self.colony = colony
@@ -38,7 +36,6 @@ class Ant(Thread):
 		graph = self.colony.graph
 		while not self.end():
 			# we need exclusive access to the graph
-			graph.lock.acquire()
 			new_node = self.state_transition_rule(self.curr_node)
 			self.path_cost += graph.delta(self.curr_node, new_node)
 
@@ -48,7 +45,6 @@ class Ant(Thread):
 			# print("Ant %s : %s, %s" % (self.ID, self.path_vec, self.path_cost,))
 			
 			self.local_updating_rule(self.curr_node, new_node)
-			graph.lock.release()
 
 			self.curr_node = new_node
 
