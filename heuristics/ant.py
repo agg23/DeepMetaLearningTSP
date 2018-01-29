@@ -16,7 +16,6 @@ class Ant:
 		self.path_cost = 0
 
 		# same meaning as in standard equations
-		self.Beta = 1
 		#self.Q0 = 1  # Q0 = 1 works just fine for 10 city case (no explore)
 		self.Q0 = 0.5
 		self.Rho = 0.99
@@ -67,37 +66,32 @@ class Ant:
 		q = random.random()
 		max_node = -1
 
+		etha_pow_mat = graph.etha_pow_mat[curr_node]
+		tau_mat = graph.tau_mat[curr_node]
+
+		nodes = list(self.nodes_to_visit.values())
+
+		mult_mat = numpy.multiply(tau_mat[nodes], etha_pow_mat[nodes])
+
 		if q < self.Q0:
 			# print("Exploitation")
-			max_val = -1
-			val = None
+			max_node = nodes[numpy.argmax(mult_mat)]
 
-			for node in self.nodes_to_visit.values():
-				if graph.tau(curr_node, node) == 0:
-					raise Exception("tau = 0")
-
-				val = graph.tau(curr_node, node) * math.pow(graph.etha(curr_node, node), self.Beta)
-				if val > max_val:
-					max_val = val
-					max_node = node
 		else:
 			# print("Exploration")
 			sum = 0
 			node = -1
 
-			for node in self.nodes_to_visit.values():
-				if graph.tau(curr_node, node) == 0:
-					raise Exception("tau = 0")
-				sum += graph.tau(curr_node, node) * math.pow(graph.etha(curr_node, node), self.Beta)
+			sum = numpy.sum(mult_mat)
 			if sum == 0:
 				raise Exception("sum = 0")
 
-			avg = sum / len(self.nodes_to_visit)
+			avg = sum / len(nodes)
 
 			# print("avg = %f\n" % (avg))
 
-			for node in self.nodes_to_visit.values():
-				p = graph.tau(curr_node, node) * math.pow(graph.etha(curr_node, node), self.Beta) 
+			for i, node in enumerate(nodes):
+				p = mult_mat[i]
 				if p > avg:
 					# print("p = %s" % (p,))
 					max_node = node

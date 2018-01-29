@@ -83,8 +83,9 @@ def solveGenetic(tsp, generations, mutationRate, populationSize, timeLimit, prin
 	return genetic.entirePopulation[genetic.minIndex]
 
 def solveAntColony(tsp, antCount, iterations, repetitions, timeLimit, printUpdates=True):
-	try:
-		graph = AntGraph(tsp)
+		beta = 1
+	# try:
+		graph = AntGraph(tsp, beta)
 		bestPath = None
 		bestCost = sys.maxsize
 		for i in range(0, repetitions):
@@ -101,5 +102,5 @@ def solveAntColony(tsp, antCount, iterations, repetitions, timeLimit, printUpdat
 
 		return bestPath
 
-	except Exception as e:
-		print("Ant exception: " + str(e))
+	# except Exception as e:
+	# 	print("Ant exception: " + str(e))
