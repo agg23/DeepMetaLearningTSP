@@ -83,8 +83,8 @@ class Ant:
 			node = -1
 
 			sum = numpy.sum(mult_mat)
-			if sum == 0:
-				raise Exception("sum = 0")
+			# if sum == 0:
+			# 	raise Exception("sum = 0")
 
 			avg = sum / len(nodes)
 
