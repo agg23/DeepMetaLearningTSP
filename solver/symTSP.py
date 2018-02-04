@@ -1,5 +1,6 @@
 from solver.tsp import TSP
 import numpy
+import sys
 
 class SymmetricTSP(TSP):
 	# Currently identical to asymTSP
@@ -13,6 +14,9 @@ class SymmetricTSP(TSP):
 		return False
 
 	def getCost(self, cityA, cityB):
+		if not self.getAdjacent(cityA, cityB):
+			return sys.maxsize
+		
 		return self.costs[cityA][cityB]
 
 	def setCost(self, cityA, cityB, cost):

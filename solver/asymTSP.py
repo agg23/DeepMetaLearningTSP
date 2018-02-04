@@ -1,5 +1,6 @@
 from solver.tsp import TSP
 import numpy
+import sys
 
 class AsymmetricTSP(TSP):
 	def __init__(self, size):
@@ -11,6 +12,9 @@ class AsymmetricTSP(TSP):
 		return True
 
 	def getCost(self, cityA, cityB):
+		if not self.getAdjacent(cityA, cityB):
+			return sys.maxsize
+
 		return self.costs[cityA][cityB]
 
 	def setCost(self, cityA, cityB, cost):

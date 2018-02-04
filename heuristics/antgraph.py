@@ -1,5 +1,6 @@
 import numpy
 import math
+import sys
 
 class AntGraph:
 	def __init__(self, tsp, beta):
@@ -15,10 +16,13 @@ class AntGraph:
 
 		for i in range(0, self.num_nodes):
 			for j in range(0, self.num_nodes):
+				adjacent = self.tsp.getAdjacent(i, j)
 				cost = self.tsp.getCost(i, j)
 				self.delta_mat[i][j] = cost
-				if cost == 0:
-					cost = 1
+				if not adjacent or cost == 0:
+					# If not adjacent, make it impossible to travel between
+					# If cost == 0, shouldn't be accessed anyway, but prevent divide by 0
+					cost = sys.maxsize
 				self.etha_pow_mat[i][j] = math.pow(1.0 / cost, beta)
 
 	def delta(self, r, s):
