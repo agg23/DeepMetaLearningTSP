@@ -41,11 +41,12 @@ def solveTabu(tsp, maxCandidates, maxTabu, maxNoImprovements, timeLimit, printUp
 
 	return tabu.search(tsp, maxNoImprovements, maxTabu, maxCandidates, timeLimit, updateLambda)
 
-def solveSimAnneal(tsp, startTemp, endTemp, iterations, printUpdateFreq = 100):
+def solveSimAnneal(tsp, startTemp, endTemp, iterations, timeLimit, printUpdateFreq = 100):
 	sim = SimulatedAnnealing(tsp)
 	sim.Tmin = endTemp
 	sim.Tmax = startTemp
 	sim.steps = iterations
+	sim.timelimit = timeLimit
 
 	if not printUpdateFreq:
 		sim.updates = 0
