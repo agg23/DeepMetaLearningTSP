@@ -16,6 +16,10 @@ This repo contains the resources used in the development of my undergraduate the
 * The ranking LSTM network is trained in [DeepWalk LSTM.ipynb](DeepWalk%20LSTM.ipynb)
 * The ranking ConvLSTM network is trained in [DeepWalk ConvLSTM.ipynb](DeepWalk%20ConvLSTM.ipynb)
 
+## Dataset
+
+The generated TSP instances are available [here](https://www.dropbox.com/s/oi7lpsiv7lsjems/generatedTSPInstances.tar.xz?dl=0) and the final datasets containing various-sized DeepWalk runs are available [here](https://www.dropbox.com/s/c77530qsjqfdcfj/deepwalkDatasets.tar.xz?dl=0).
+
 ## Resources
 
 Papers:
